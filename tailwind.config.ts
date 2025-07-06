@@ -10,6 +10,13 @@ export default {
     extend: {
       colors: {
         base: "#f7f9fa",
+        "primary-dark": "#003E3B",
+        primary: "#00A49C",
+        accent: "#AFE035",
+        warning: "#FAE56B",
+      },
+      boxShadow: {
+        custom: "0px 4px 8px -2px rgba(0,0,0,0.1)",
       },
     },
   },
