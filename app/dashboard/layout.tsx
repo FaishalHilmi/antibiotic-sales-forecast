@@ -2,7 +2,7 @@
 
 import { SidebarProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/Sidebar";
-import Navbar from "@/components/Navbar";
+import NavbarDashboard from "@/components/NavbarDashboard";
 
 export default function DashboardLayout({
   children,
@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <div className="flex min-h-screen text-black bg-base">
         <Sidebar />
         <div className="flex-1 flex flex-col">
-          <Navbar />
+          <NavbarDashboard />
           <main className="px-4 py-2 sm:px-6 sm:py-4">{children}</main>
         </div>
       </div>
