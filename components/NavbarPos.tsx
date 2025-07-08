@@ -43,7 +43,7 @@ export default function NavbarPOS() {
           <span className="text-primary">Hello</span>, Admin
         </span>
         <img
-          src="/logo_apotek-fajar.png"
+          src="/profile-dummy.png"
           alt="Profile"
           className="w-8 h-8 rounded-full"
         />
