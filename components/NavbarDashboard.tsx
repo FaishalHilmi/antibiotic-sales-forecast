@@ -28,14 +28,23 @@ export default function Navbar() {
         <AlignLeft className="w-5" />
       </button>
 
-      <h1 className="logo sm:hidden">
+      <div className="logo sm:hidden flex gap-2">
         <img src="/logo_apotek_fajar.png" alt="Logo" className="w-8 h-8" />
-      </h1>
-      <div className="profile flex gap-3 items-center">
-        <span className="text-sm hidden sm:inline">John Thor</span>
-        <div className="px-2 py-1.5 sm:px-3 sm:py-2 text-sm bg-gray-200 rounded-full">
-          JT
-        </div>
+        <h1 className="text-xs font-semibold flex flex-col">
+          <span>Dashboard Apotek</span>
+          <span>Fajar Cempaka</span>
+        </h1>
+      </div>
+
+      <div className="flex items-center space-x-3">
+        <span className="text-black font-medium hidden md:block">
+          <span className="text-primary">Hello</span>, Admin
+        </span>
+        <img
+          src="/profile-dummy.png"
+          alt="Profile"
+          className="w-8 h-8 rounded-full"
+        />
       </div>
     </div>
   );
