@@ -1,4 +1,9 @@
+"use client";
+
+import BarChart from "@/components/BarChart";
 import { Pill, Receipt, ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import { transactions } from "@/data/transaction";
 
 export default function DashboardPage() {
   return (
@@ -48,6 +53,63 @@ export default function DashboardPage() {
           </div>
           <div className="icon p-3.5 bg-primary rounded-lg flex items-center h-fit shadow-lg">
             <Pill className="text-white w-6 h-6" />
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mt-2 md:mt-4">
+        <div className="col-span-1 md:col-span-2">
+          <div className="cart-wrapper bg-white border border-gray-200 p-3 md:p-4 rounded-2xl">
+            <h1 className="font-semibold text-lg md:text-xl -mb-4">
+              Penjualan Mingguan
+            </h1>
+            <BarChart />
+          </div>
+        </div>
+        <div className="col-span-1">
+          <div className="wrapper bg-white border border-gray-200 p-3 md:p-4 rounded-2xl">
+            <div className="header flex justify-between items-center mb-3">
+              <h1 className="font-semibold text-lg md:text-xl">
+                Transaksi Terbaru
+              </h1>
+              <Link
+                href={"/"}
+                className="p-2 border rounded-lg text-sm bg-primary text-white shadow-md hover:shadow-none hover:scale-95 transition-all duration-300"
+              >
+                Selengkapnya
+              </Link>
+            </div>
+            <div className="card-list-section">
+              {transactions.map((trx) => (
+                <div
+                  key={trx.id}
+                  className="p-3 border rounded-xl mb-3 hover:shadow-sm transition"
+                >
+                  <div className="flex justify-between md:items-center">
+                    <div>
+                      <h2 className="font-semibold text-sm md:text-base">
+                        <span className="text-black">{trx.id}</span>
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        {trx.date} - {trx.cashier}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-sm md:text-base">
+                        <span className="text-primary">
+                          Rp {trx.total.toLocaleString()}
+                        </span>
+                      </p>
+                      <Link
+                        href={"/"}
+                        className="text-xs text-gray-400 underline hover:underline mt-1"
+                      >
+                        Lihat Detail
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
