@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen text-black bg-base">
+      <div className="md:flex min-h-screen text-black bg-base">
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <NavbarDashboard />
