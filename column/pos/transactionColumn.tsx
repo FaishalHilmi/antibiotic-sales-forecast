@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const transactionColumns = [
+export const transactionColumn = [
   {
     name: <span className="font-bold text-black">ID Transaksi</span>,
     selector: (row: any) => row.id,
