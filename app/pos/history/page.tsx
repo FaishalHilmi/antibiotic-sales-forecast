@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { transactions } from "@/data/transaction";
-import { transactionColumns } from "@/column/pos/transactionColumn";
+import { transactionColumn } from "@/column/pos/transactionColumn";
 
 // Import DataTable secara dinamis (SSR disabled)
 const DataTable = dynamic(() => import("react-data-table-component"), {
@@ -12,30 +12,6 @@ const DataTable = dynamic(() => import("react-data-table-component"), {
 
 export default function History() {
   const [search, setSearch] = useState("");
-
-  // const data = [
-  //   {
-  //     id: 1,
-  //     transactionId: "AB13132",
-  //     transactionDate: "Sabtu, 19 Maret 2025",
-  //     totalPrice: 50000,
-  //     cashierName: "Admin 1",
-  //   },
-  //   {
-  //     id: 2,
-  //     transactionId: "AB13133",
-  //     transactionDate: "Minggu, 20 Maret 2025",
-  //     totalPrice: 80000,
-  //     cashierName: "Admin 2",
-  //   },
-  //   {
-  //     id: 3,
-  //     transactionId: "AB13134",
-  //     transactionDate: "Senin, 21 Maret 2025",
-  //     totalPrice: 120000,
-  //     cashierName: "Admin 1",
-  //   },
-  // ];
 
   const customStyles = {
     headCells: {
@@ -70,7 +46,7 @@ export default function History() {
             onChange={(e) => setSearch(e.target.value)}
           />
           <DataTable
-            columns={transactionColumns}
+            columns={transactionColumn}
             data={filteredData}
             pagination
             highlightOnHover
