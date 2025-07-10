@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useSidebar } from "@/context/SidebarContext";
+import { useSidebar } from "@/hooks/useSidebar";
 import { usePathname } from "next/navigation";
 import { navLinkData } from "@/data/sidebarNavLink";
 
