@@ -5,7 +5,7 @@ import { ModalProps } from "@/types/modal";
 
 export default function Modal({
   isOpen,
-  onClose,
+  onCloseAction,
   title,
   children,
 }: ModalProps) {
@@ -15,7 +15,7 @@ export default function Modal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
       <div className="bg-white p-6 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative animate-fade-in">
         <button
-          onClick={onClose}
+          onClick={onCloseAction}
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
         >
           <X />
