@@ -122,7 +122,7 @@ export default function POSPage() {
       {/* Modal Responsive */}
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onCloseAction={() => setIsModalOpen(false)}
         title="Detail Pembayaran"
       >
         {/* List Item */}
