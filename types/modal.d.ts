@@ -3,7 +3,7 @@ import React, { Children } from "react";
 
 export interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
   title: string;
   children: React.ReactNode;
 }
