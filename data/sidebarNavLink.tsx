@@ -15,27 +15,27 @@ export const navLinkData = [
   },
   {
     name: "Kelola Obat",
-    route: "/kelola-obat",
+    route: "/dashboard/obat",
     icon: <Pill className="w-5 h-5" />,
   },
   {
     name: "Riwayat Penjualan",
-    route: "/kelola-penjualan",
+    route: "/dashboard/penjualan",
     icon: <FileText className="w-5 h-5" />,
   },
   {
     name: "Peramalan",
-    route: "/peramalan",
+    route: "/dashboard/peramalan",
     icon: <LineChart className="w-5 h-5" />,
   },
   {
     name: "Rekap Penjualan",
-    route: "/rekap-penjualan",
+    route: "/dashboard/rekap-penjualan",
     icon: <ClipboardList className="w-5 h-5" />,
   },
   {
     name: "Kelola Akun Kasir",
-    route: "/kelola-akun-kasir",
+    route: "/dashboard/akun-kasir",
     icon: <Users2 className="w-5 h-5" />,
   },
 ];
