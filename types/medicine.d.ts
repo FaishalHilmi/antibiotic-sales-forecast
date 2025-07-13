@@ -5,3 +5,7 @@ export interface Medicine {
   stocks: number;
   category: string;
 }
+
+export interface MedicineWithImage extends Medicine {
+  image: string;
+}
