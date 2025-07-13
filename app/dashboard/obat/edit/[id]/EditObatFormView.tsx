@@ -6,7 +6,7 @@ import SelectInput from "@/components/SelectInput";
 import { kategoriOptionsDummy } from "@/data/kategoriOptionsDummy";
 import React, { useEffect, useState } from "react";
 
-export default function EditObatForm() {
+export default function EditObatFormView() {
   const [image, setImage] = useState<File | null>(null);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
