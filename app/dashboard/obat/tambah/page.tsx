@@ -1,4 +1,4 @@
-import TambahObatForm from "./TambahObatForm";
+import TambahObatFormView from "./TambahObatFormView";
 
 export default function TambahObatPage() {
   return (
@@ -7,7 +7,7 @@ export default function TambahObatPage() {
       <p className="text-primary mb-6">
         Lengkapi informasi berikut untuk menambahkan obat
       </p>
-      <TambahObatForm />
+      <TambahObatFormView />
     </div>
   );
 }
