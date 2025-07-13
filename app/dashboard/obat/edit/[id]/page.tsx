@@ -1,4 +1,4 @@
-import EditObatForm from "./EditObatForm";
+import EditObatFormView from "./EditObatFormView";
 
 export default function EditObatPage() {
   return (
@@ -7,7 +7,7 @@ export default function EditObatPage() {
       <p className="text-primary mb-6">
         Lengkapi informasi berikut untuk mengubah obat
       </p>
-      <EditObatForm />
+      <EditObatFormView />
     </div>
   );
 }
