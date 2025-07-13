@@ -7,3 +7,9 @@ export interface ModalProps {
   title: string;
   children: React.ReactNode;
 }
+
+export interface ModalTambahStokProps {
+  isOpen: boolean;
+  onCloseAction: () => void;
+  onSubmitAction: (jumlah: number, keterangan: string) => void;
+}
