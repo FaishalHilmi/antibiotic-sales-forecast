@@ -6,7 +6,7 @@ import RiwayatStok from "./components/RiwayatStok";
 import ModalTambahStok from "./components/ModalTambahStok";
 import { useState } from "react";
 
-export default function DetailObat() {
+export default function DetailObatView() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [riwayatStok, setRiwayatStok] = useState([
     { id: 1, jumlah: 50, keterangan: "Stok awal masuk" },
