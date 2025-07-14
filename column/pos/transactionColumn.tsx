@@ -1,28 +1,31 @@
+"use client";
+
 import Link from "next/link";
 
 export const transactionColumn = [
   {
-    name: <span className="font-bold text-black">ID Transaksi</span>,
+    name: "ID Transaksi",
     selector: (row: any) => row.id,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Tanggal Transaksi</span>,
+    name: "Tanggal Transaksi",
     selector: (row: any) => row.date,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Total Harga</span>,
-    selector: (row: any) => `Rp ${row.total.toLocaleString()}`,
-    sortable: true,
+    name: "Total Harga",
+    selector: (row: any) =>
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(row.total),
   },
   {
-    name: <span className="font-bold text-black">Nama Kasir</span>,
+    name: "Nama Kasir",
     selector: (row: any) => row.cashier,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Aksi</span>,
+    name: "Aksi",
     cell: (row: any) => (
       <div className="flex flex-col md:flex-row gap-1 md:gap-2 py-2 md:py-0">
         <Link
