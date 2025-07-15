@@ -1,9 +1,5 @@
-// "use client";
-
-import SearchableTable from "@/components/SearchableTable";
-import { dummyObat } from "@/data/obat";
-import { medicineColumn } from "@/column/dashboard/medicineColumn";
 import Link from "next/link";
+import KelolaObatView from "./KelolaObatView";
 
 export default function KelolaObatpage() {
   return (
@@ -19,14 +15,7 @@ export default function KelolaObatpage() {
         >
           Tambah Obat
         </Link>
-        <div className="table-wrapper p-4 mt-7 bg-white flex flex-col items-end border border-gray-200 rounded-3xl">
-          <SearchableTable
-            column={medicineColumn}
-            data={dummyObat}
-            searchKeys={["name"]}
-            placeholder="Cari nama obat..."
-          />
-        </div>
+        <KelolaObatView />
       </div>
     </div>
   );
