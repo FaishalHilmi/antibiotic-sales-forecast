@@ -30,3 +30,28 @@ export const transactions = [
     total: 18000,
   },
 ];
+
+export const transactionsDetail = [
+  {
+    id: "TRX-00121",
+    date: "Sen, 8 Juli 2025, 09:32",
+    cashier: "Admin 1",
+    total: 24000,
+    items: [
+      { name: "Paracetamol", quantity: 2, price: 12000 },
+      { name: "Amoxicillin", quantity: 1, price: 12000 },
+    ],
+  },
+  {
+    id: "TRX-00120",
+    date: "Sen, 8 Juli 2025, 09:15",
+    cashier: "Admin 2",
+    total: 56000,
+    items: [
+      { name: "Ibuprofen", quantity: 3, price: 15000 },
+      { name: "Cetirizine", quantity: 2, price: 13000 },
+      { name: "Paracetamol", quantity: 2, price: 11000 },
+      { name: "Amoxicillin", quantity: 1, price: 12000 },
+    ],
+  },
+];
