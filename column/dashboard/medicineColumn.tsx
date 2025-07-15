@@ -4,27 +4,28 @@ import Link from "next/link";
 
 export const medicineColumn = [
   {
-    name: <span className="font-bold text-black">Nama Obat</span>,
+    name: "Nama Obat",
     selector: (row: any) => row.name,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Harga</span>,
-    selector: (row: any) => `Rp ${row.price.toLocaleString()}`,
-    sortable: true,
+    name: "Harga",
+    selector: (row: any) =>
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(row.price),
   },
   {
-    name: <span className="font-bold text-black">Stok</span>,
+    name: "Stok",
     selector: (row: any) => row.stocks,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Kategori</span>,
+    name: "Kategori",
     selector: (row: any) => row.category,
-    sortable: true,
   },
   {
-    name: <span className="font-bold text-black">Aksi</span>,
+    name: "Aksi",
     cell: (row: any) => (
       <div className="flex flex-col md:flex-row gap-1 md:gap-2 py-2 md:py-0">
         <Link
