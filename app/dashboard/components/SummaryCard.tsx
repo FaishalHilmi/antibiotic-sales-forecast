@@ -20,7 +20,7 @@ export default function SummaryCard({
         <span className="text-sm -mt-1 text-gray-400 block mb-3">
           {subtitle}
         </span>
-        <span className="font-bold text-xl">{value} Produk</span>
+        <span className="font-bold text-xl">{value}</span>
       </div>
       <div className="icon p-3.5 bg-primary rounded-lg flex items-center h-fit shadow-lg">
         {/* <ShoppingCart className="text-white w-6 h-6" /> */}
