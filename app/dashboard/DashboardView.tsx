@@ -18,19 +18,19 @@ export default function DashboardView() {
         <SummaryCard
           title="Total Penjualan"
           subtitle={formattedDate}
-          value={"37"}
+          value={"37 Produk"}
           icon={<ShoppingCart className="text-white w-6 h-6" />}
         />
         <SummaryCard
           title="Total Transaksi"
           subtitle={formattedDate}
-          value="2.450.000"
+          value="Rp 2.450.000"
           icon={<Receipt className="text-white w-6 h-6" />}
         />
         <SummaryCard
           title="Jumlah Obat"
           subtitle="Total Obat Tersedia"
-          value="15"
+          value="15 Item"
           icon={<Pill className="text-white w-6 h-6" />}
         />
       </div>
