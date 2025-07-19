@@ -13,3 +13,9 @@ export interface ModalTambahStokProps {
   onCloseAction: () => void;
   onSubmitAction: (jumlah: number, keterangan: string) => void;
 }
+
+export interface ModalTambahRekapitulasiProps {
+  isOpen: boolean;
+  onCloseAction: () => void;
+  onSubmitAction: (periode: string) => void;
+}
