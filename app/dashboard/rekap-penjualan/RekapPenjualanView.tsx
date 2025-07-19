@@ -5,6 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import DataTable from "react-data-table-component";
 import ModalTambahRekapitulasi from "./components/ModalTambahRekapitulasi";
+import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
 
 const dummyRekapPenjualan = [
   {
@@ -85,6 +86,7 @@ export default function RekapPenjualanView() {
         responsive
         pagination
         highlightOnHover
+        customStyles={headersBoldStyle}
       />
       <ModalTambahRekapitulasi
         isOpen={showModal}
