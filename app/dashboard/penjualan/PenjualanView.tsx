@@ -5,6 +5,7 @@ import { transactionColumn } from "@/column/dashboard/transactionColumn";
 import { transactions } from "@/data/transaction";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
@@ -19,7 +20,7 @@ export default function PenjualanView() {
 
   return (
     <div>
-      <div className="flex justify-end ">
+      <div className="flex justify-end mb-4">
         <SearchBar
           placeholder="Cari ID obat..."
           value={search}
@@ -32,6 +33,7 @@ export default function PenjualanView() {
         responsive
         pagination
         highlightOnHover
+        customStyles={headersBoldStyle}
       />
     </div>
   );
