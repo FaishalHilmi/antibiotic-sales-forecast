@@ -14,6 +14,7 @@ import { barOptionsRekapPenjualan } from "@/chart/barOptionsRekapPenjualan";
 import { customDataTableStyles } from "@/components/datatable/tableStyle";
 import InformasiUmum from "./components/InformasiUmum";
 import TandaTangan from "./components/TandaTangan";
+import HeaderRekap from "./components/HeaderRekap";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
@@ -77,6 +78,7 @@ export default function DetailRekapView() {
       >
         <div className="space-y-6 mb-16">
           {/* Kop Surat */}
+          <HeaderRekap />
 
           {/* Judul */}
           <div className="text-center mb-6">
