@@ -12,7 +12,7 @@ export default function SearchBar({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`border border-gray-200 rounded-xl px-3 py-2 mb-4 text-sm outline-gray-300 ${className}`}
+      className={`border border-gray-200 rounded-xl px-3 py-2 text-sm outline-gray-300 ${className}`}
     />
   );
 }
