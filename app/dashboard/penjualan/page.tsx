@@ -9,13 +9,8 @@ export default function KelolaPenjualanPage() {
           Lihat dan kelola data transaksi penjualan yang tersedia
         </p>
         <div className="table-wrapper p-4 mt-7 bg-white flex flex-col border border-gray-200 rounded-3xl">
-          {/* <SearchableTable
-            column={transactionColumn}
-            data={transactions}
-            searchKeys={["id"]}
-            placeholder="Cari nama obat..."
-          /> */}
           <PenjualanView />
+          {/* Remove Searchable Component */}
         </div>
       </div>
     </div>
