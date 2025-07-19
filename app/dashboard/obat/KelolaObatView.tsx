@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { dummyObat } from "@/data/obat";
 import { medicineColumn } from "@/column/dashboard/medicineColumn";
+import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
+import Link from "next/link";
 
 // Import DataTable secara dinamis (SSR disabled)
 const DataTable = dynamic(() => import("react-data-table-component"), {
@@ -18,73 +20,29 @@ export default function KelolaObatView() {
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const customStyles = {
-    headCells: {
-      style: {
-        fontWeight: "700",
-        fontSize: "14px",
-      },
-    },
-  };
-
-  //   const medicineColumn = [
-  //     {
-  //       name: "Nama Obat",
-  //       selector: (row: any) => row.name,
-  //     },
-  //     {
-  //       name: "Harga",
-  //       selector: (row: any) =>
-  //         new Intl.NumberFormat("id-ID", {
-  //           style: "currency",
-  //           currency: "IDR",
-  //           minimumFractionDigits: 0,
-  //         }).format(row.price),
-  //     },
-  //     {
-  //       name: "Stok",
-  //       selector: (row: any) => row.stocks,
-  //     },
-  //     {
-  //       name: "Kategori",
-  //       selector: (row: any) => row.category,
-  //     },
-  //     {
-  //       name: "Aksi",
-  //       cell: (row: any) => (
-  //         <div className="flex flex-col md:flex-row gap-1 md:gap-2 py-2 md:py-0">
-  //           <Link
-  //             href={`/dashboard/obat/edit/${row.id}`}
-  //             className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
-  //           >
-  //             Detail
-  //           </Link>
-  //           <Link
-  //             href={`/dashboard/obat/delete/${row.id}`}
-  //             className="bg-red-500 text-white text-xs px-3 py-2 rounded-lg"
-  //           >
-  //             Hapus
-  //           </Link>
-  //         </div>
-  //       ),
-  //     },
-  //   ];
-
   return (
-    <div className="table-wrapper p-4 mt-7 bg-white flex flex-col items-end border border-gray-200 rounded-3xl">
-      <SearchBar
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Cari nama obat..."
-        className=""
-      />
+    <div className="table-wrapper p-4 mt-7 bg-white flex flex-col border border-gray-200 rounded-3xl">
+      <div className="mb-4 flex flex-col md:flex-row justify-between">
+        <Link
+          href={"/dashboard/obat/tambah"}
+          className="py-2 px-3.5 mb-3 md:mb-0 rounded-lg text-sm bg-primary text-white shadow-md w-fit"
+        >
+          Tambah Obat
+        </Link>
+        <SearchBar
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Cari nama obat..."
+          className=""
+        />
+      </div>
       <DataTable
         columns={medicineColumn}
         data={filteredData}
         pagination
         highlightOnHover
         responsive
-        customStyles={customStyles}
+        customStyles={headersBoldStyle}
       />
     </div>
   );
