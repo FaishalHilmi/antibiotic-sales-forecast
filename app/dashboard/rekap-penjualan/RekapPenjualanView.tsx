@@ -1,38 +1,17 @@
 "use client";
 
 import { rekapPenjualanColumn } from "@/column/dashboard/rekapPenjualanColumn";
-import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
-import DataTable from "react-data-table-component";
-import ModalTambahRekapitulasi from "./components/ModalTambahRekapitulasi";
 import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
+import { dummyRekapPenjualan } from "@/data/penjualan";
+import SearchBar from "@/components/SearchBar";
+import ModalTambahRekapitulasi from "./components/ModalTambahRekapitulasi";
+import dynamic from "next/dynamic";
 
-const dummyRekapPenjualan = [
-  {
-    id: 1,
-    periode: "Juli 2025",
-    totalPenjualan: 1850000,
-    totalObatTerjual: 320,
-    createdAt: "2025-08-01T09:00:00",
-    updatedAt: "2025-08-01T09:00:00",
-  },
-  {
-    id: 2,
-    periode: "Juni 2025",
-    totalPenjualan: 2025000,
-    totalObatTerjual: 350,
-    createdAt: "2025-07-01T08:45:00",
-    updatedAt: "2025-07-05T10:12:00",
-  },
-  {
-    id: 3,
-    periode: "Mei 2025",
-    totalPenjualan: 1700000,
-    totalObatTerjual: 290,
-    createdAt: "2025-06-01T10:20:00",
-    updatedAt: "2025-06-01T10:20:00",
-  },
-];
+const DataTable = dynamic(() => import("react-data-table-component"), {
+  ssr: false,
+});
+
 export default function RekapPenjualanView() {
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
