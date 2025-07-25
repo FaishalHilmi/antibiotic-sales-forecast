@@ -9,7 +9,9 @@ export default function InputText({
 }: InputProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id} className="text-black">
+        {label}
+      </label>
       <input
         type={type}
         id={id}
