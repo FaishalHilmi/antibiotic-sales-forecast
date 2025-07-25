@@ -1,12 +1,14 @@
 "use client";
 import { useSidebar } from "@/hooks/useSidebar";
 import { AlignLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
   const { toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -18,6 +20,26 @@ export default function Navbar() {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Tutup dropdown saat klik di luar komponen
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    console.log("Logout clicked");
+    // TODO: Tambahkan logic logout (misalnya: signOut() atau redirect)
+  };
 
   return (
     <div className="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center relative z-50">
@@ -36,7 +58,7 @@ export default function Navbar() {
         </h1>
       </div>
 
-      <div className="flex items-center space-x-3">
+      <div ref={profileRef} className="flex items-center space-x-3">
         <span className="text-black font-medium hidden md:block">
           <span className="text-primary">Hello</span>, Admin
         </span>
@@ -44,7 +66,25 @@ export default function Navbar() {
           src="/profile-dummy.png"
           alt="Profile"
           className="w-8 h-8 rounded-full"
+          onClick={() => setIsProfileMenuOpen((prev) => !prev)}
         />
+
+        {/* Dropdown */}
+        {isProfileMenuOpen && (
+          <div className="absolute top-full right-2 mt-1 w-40 bg-white border shadow-md rounded-md z-50">
+            <div className="flex flex-col px-3">
+              <span className="block md:hidden w-full text-left py-2 text-sm hover:bg-gray-100 text-primary font-medium">
+                Hello, <span className="text-black">Admin</span>
+              </span>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left py-2 text-sm hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
