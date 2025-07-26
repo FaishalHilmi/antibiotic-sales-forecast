@@ -42,24 +42,30 @@ export default function Sidebar() {
             !isExpanded && "items-center"
           }`}
         >
-          {navLinkData.map((navLink, i) => (
-            <Link
-              key={i}
-              href={navLink.route}
-              className={`flex items-center p-2 rounded-md transition-colors duration-200
-              ${
-                pathname === navLink.route
-                  ? "bg-primary text-white"
-                  : "hover:bg-gray-200 text-gray-700"
-              }
-              ${!isExpanded && "justify-center"}
-            `}
-              onClick={toggleMobileSidebar}
-            >
-              {navLink.icon}
-              {isExpanded && <span className="ml-3">{navLink.name}</span>}
-            </Link>
-          ))}
+          {navLinkData.map((navLink, i) => {
+            const isActive = navLink.exact
+              ? pathname === navLink.route
+              : pathname === navLink.route ||
+                pathname.startsWith(`${navLink.route}/`);
+
+            return (
+              <Link
+                key={navLink.route}
+                href={navLink.route}
+                className={`flex items-center p-2 rounded-md transition-colors duration-200
+                ${
+                  isActive
+                    ? "bg-primary text-white"
+                    : "hover:bg-gray-200 text-gray-700"
+                }
+                ${!isExpanded ? "justify-center" : ""}
+              `}
+              >
+                {navLink.icon}
+                {isExpanded && <span className="ml-3">{navLink.name}</span>}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </>
