@@ -43,9 +43,6 @@ export default function NavbarPOS() {
         <Link href="/pos" className="text-black hover:text-primary">
           Beranda
         </Link>
-        <Link href="/pos/products" className="text-black hover:text-primary">
-          Daftar Obat
-        </Link>
         <Link href="/pos/history" className="text-black hover:text-primary">
           Riwayat Transaksi
         </Link>
