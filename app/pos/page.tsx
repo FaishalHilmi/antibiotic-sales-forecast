@@ -1,8 +1,9 @@
 "use client";
 
 import Modal from "@/components/Modal";
+import TransactionReceipt from "@/components/TransactionReceipt";
 import { CartItem } from "@/types/cart";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus, Trash } from "lucide-react";
 import { useState } from "react";
 
 export default function POSPage() {
@@ -19,10 +20,38 @@ export default function POSPage() {
     0
   );
 
+  // Dummy Data
+  const data = [
+    { itemName: "Paracetamol", quantity: 2, price: 5000, total: 10000 },
+    { itemName: "Amoxicillin", quantity: 1, price: 8000, total: 8000 },
+    { itemName: "Vitamin C", quantity: 3, price: 4000, total: 12000 },
+  ];
+
+  const subTotal = data.reduce((sum, item) => sum + item.total, 0);
+
+  const receiptData = {
+    transactionId: "AB13132",
+    datetime: "Kamis, 17 Desember 2025 14:24 WIB",
+    cashierName: "Faishal Hilmy",
+    items: data,
+    subTotal,
+  };
+
+  const handlePaymentAndPrint = () => {
+    // (1) Simulasikan pembayaran berhasil
+    setIsModalOpen(false); // tutup modal
+
+    // (2) Tunggu animasi modal tutup baru cetak
+    setTimeout(() => {
+      handlePrint?.(); // cetak struk
+    }, 300); // 300ms untuk animasi close modal
+  };
+
+  const handlePrint = () => window.print();
   return (
     <div>
       {/* POS Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-9 no-print">
         {/* Menu Section */}
         <div className="menu-section col-span-1 md:col-span-2">
           <div className="heading-search-bar-section flex flex-col md:flex-row justify-between gap-2 mb-8 md:mb-7">
@@ -65,8 +94,14 @@ export default function POSPage() {
             {cartItems.map((item, index) => (
               <div
                 key={index}
-                className="card-list flex items-center gap-3 border-b-2 border-gray-200 py-4"
+                className="card-list relative flex items-center gap-3 border-b-2 border-gray-200 py-4"
               >
+                <button
+                  className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-red-500 transition-colors"
+                  aria-label="Hapus item"
+                >
+                  <Trash className="w-5 h-5" />
+                </button>
                 <img
                   src="/medicine.png"
                   alt="Image Product"
@@ -158,10 +193,18 @@ export default function POSPage() {
         </div>
 
         {/* Bayar Button */}
-        <button className="bg-primary-dark text-white font-medium w-full py-2 rounded-lg">
+        <button
+          onClick={handlePaymentAndPrint}
+          className="bg-primary-dark text-white font-medium w-full py-2 rounded-lg"
+        >
           Bayar Sekarang
         </button>
       </Modal>
+
+      {/* Komponen Struk untuk Cetak */}
+      <div className="receipt-print hidden print:block" id="print-area">
+        <TransactionReceipt {...receiptData} />
+      </div>
     </div>
   );
 }
