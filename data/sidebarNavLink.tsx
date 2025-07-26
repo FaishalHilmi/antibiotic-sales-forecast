@@ -12,6 +12,7 @@ export const navLinkData = [
     name: "Dashboard",
     route: "/dashboard",
     icon: <Home className="w-5 h-5" />,
+    exact: true,
   },
   {
     name: "Kelola Obat",
@@ -19,7 +20,7 @@ export const navLinkData = [
     icon: <Pill className="w-5 h-5" />,
   },
   {
-    name: "Riwayat Penjualan",
+    name: "Riwayat Transaksi",
     route: "/dashboard/penjualan",
     icon: <FileText className="w-5 h-5" />,
   },
@@ -35,7 +36,7 @@ export const navLinkData = [
   },
   {
     name: "Kelola Akun Kasir",
-    route: "/dashboard/akun-kasir",
+    route: "/dashboard/kelola-kasir",
     icon: <Users2 className="w-5 h-5" />,
   },
 ];
