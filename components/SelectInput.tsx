@@ -12,6 +12,7 @@ export default function SelectInput({
       <label htmlFor={id}>{label}</label>
       <select
         id={id}
+        name={id}
         className="border border-gray-300 rounded-lg py-1.5 px-3 outline-primary"
         value={value}
         onChange={onChange}

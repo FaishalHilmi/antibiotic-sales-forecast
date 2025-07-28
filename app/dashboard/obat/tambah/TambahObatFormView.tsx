@@ -4,27 +4,44 @@ import InputImagePreview from "@/components/InputImagePreview";
 import InputText from "@/components/InputText";
 import SelectInput from "@/components/SelectInput";
 import { kategoriOptionsDummy } from "@/data/kategoriOptionsDummy";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export default function TambahObatFormView() {
   const [image, setImage] = useState<File | null>(null);
   const [name, setName] = useState<string>("");
+  const [unit, setUnit] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number | null>(null);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // useEffect(() => {
+  //   console.log({ name, category, price, image });
+  // }, [name, category, price, image]);
+
+  const handleSubmitMedicine = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lakukan proses submit ke backend di sini
-    console.log({ name, price, category, image });
-  };
 
-  useEffect(() => {
-    console.log({ name, category, price, image });
-  }, [name, category, price, image]);
+    const formData = new FormData();
+    formData.append("nama_obat", name);
+    formData.append("kategori", category);
+    formData.append("satuan", unit);
+    formData.append("harga", String(price));
+    if (image) {
+      formData.append("gambar", image);
+    }
+
+    await fetch("/api/obat", {
+      method: "POST",
+      body: formData,
+    });
+
+    router.push("/dashboard/obat");
+  };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmitMedicine}
       className="bg-white p-6 rounded-3xl border border-gray-200 flex flex-col gap-2 "
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
@@ -37,6 +54,7 @@ export default function TambahObatFormView() {
         <SelectInput
           label="Kategori"
           id="kategori"
+          value={category}
           options={kategoriOptionsDummy}
           onChange={(e) => setCategory(e.target.value)}
         />
@@ -45,6 +63,12 @@ export default function TambahObatFormView() {
           id="harga"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
+        />
+        <SelectInput
+          label="Satuan"
+          id="satuan"
+          options={kategoriOptionsDummy}
+          onChange={(e) => setUnit(e.target.value)}
         />
         <InputImagePreview
           label="Gambar"

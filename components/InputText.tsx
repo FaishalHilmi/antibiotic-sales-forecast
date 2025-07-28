@@ -15,6 +15,7 @@ export default function InputText({
       <input
         type={type}
         id={id}
+        name={id}
         value={value ?? ""}
         onChange={onChange}
         className="border border-gray-300 rounded-lg py-1.5 px-3 outline-primary"

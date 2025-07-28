@@ -36,10 +36,11 @@ export default function InputImagePreview({
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor="gambar">{label}</label>
+      <label htmlFor={id}>{label}</label>
       <input
         type="file"
         id={id}
+        name={id}
         accept=".jpg, .jpeg, .png"
         onChange={handleImageChange}
         className="border border-gray-300 rounded-lg py-1 px-3 outline-primary"
