@@ -32,9 +32,13 @@ export default function ObatCard({ obat }: { obat: MedicineWithImage }) {
                 </span>
               </div>
               <div className="flex items-center gap-2">
+                <span className="font-medium w-24">Satuan</span>:
+                <span>Pcs</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <span className="font-medium w-24">Stok</span>:
                 <span className="text-blue-600 font-semibold">
-                  {obat.stocks} unit
+                  {obat.stocks}
                 </span>
               </div>
             </div>
