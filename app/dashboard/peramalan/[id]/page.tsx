@@ -36,12 +36,17 @@ export default function DetailPeramalanPage() {
           Informasi Obat dan Riwayat Peramalan Penjualan
         </p>
         <div className="mb-6">
-          <Link
-            href={"/dashboard/peramalan"}
-            className="px-4 py-2 bg-gray-500 text-white rounded-md"
-          >
-            Kembali
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href={"/dashboard/peramalan"}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md"
+            >
+              Kembali
+            </Link>
+            <button className="px-4 py-2 bg-primary text-white rounded-md">
+              Tambah Peramalan
+            </button>
+          </div>
         </div>
         {/* Informasi Singkat */}
         <InformasiObat informasiObat={informasiObat} />
