@@ -1,6 +1,7 @@
 "use client";
 
 import Modal from "@/components/Modal";
+import SelectInput from "@/components/SelectInput";
 import { ModalTambahStokProps } from "@/types/modal";
 import { useState } from "react";
 
@@ -11,6 +12,7 @@ export default function ModalTambahStok({
 }: ModalTambahStokProps) {
   const [jumlahTambah, setJumlahTambah] = useState<number | "">("");
   const [keterangan, setKeterangan] = useState<string>("");
+  const [aksi, setAksi] = useState<string>("");
 
   const handleSubmitTambahStok = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +22,12 @@ export default function ModalTambahStok({
     setJumlahTambah("");
     setKeterangan("");
   };
+
+  const aksiOptionsDummy = [
+    { value: "tambah", label: "Tambah" },
+    { value: "kurang", label: "Kurang" },
+  ];
+
   return (
     <Modal isOpen={isOpen} onCloseAction={onCloseAction} title="Tambah Stok">
       <form onSubmit={handleSubmitTambahStok} className="space-y-4">
@@ -35,6 +43,13 @@ export default function ModalTambahStok({
           />
         </div>
 
+        <SelectInput
+          label="Aksi"
+          id="aksi"
+          options={aksiOptionsDummy}
+          onChange={(e) => setAksi(e.target.value)}
+        />
+
         <div className="flex flex-col gap-1">
           <label htmlFor="keterangan">Keterangan</label>
           <input
@@ -49,13 +64,6 @@ export default function ModalTambahStok({
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          {/* <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-sm rounded-lg border"
-                >
-                  Batal
-                </button> */}
           <button
             type="submit"
             className="px-4 py-2 text-sm rounded-lg bg-primary text-white"
