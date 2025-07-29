@@ -1,14 +1,46 @@
 "use client";
 
 import InputText from "@/components/InputText";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function FormLogin() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const user = session?.user as { role?: string };
+
+    if (user?.role === "CASHIER") {
+      router.push("/pos");
+    } else if (user?.role === "PHARMACIST") {
+      router.push("/dashboard");
+    }
+  }, [session]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
+    });
+
+    if (res?.ok) {
+      router.refresh();
+    } else {
+      setMessage("Email dan Password salah!");
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
 
   return (
-    <form className="text-black">
+    <form className="text-black" onSubmit={handleLogin}>
       <div className="mb-2">
         <InputText
           label="Username"
@@ -32,7 +64,7 @@ export default function FormLogin() {
       >
         Submit
       </button>
-      {/* {message && <p className="text-center text-red-500">{message}</p>} */}
+      {message && <p className="text-center text-red-500">{message}</p>}
     </form>
   );
 }
