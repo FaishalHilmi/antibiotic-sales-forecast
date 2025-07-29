@@ -1,6 +1,7 @@
 "use client";
 import { useSidebar } from "@/hooks/useSidebar";
 import { AlignLeft } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
@@ -36,11 +37,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    console.log("Logout clicked");
-    // TODO: Tambahkan logic logout (misalnya: signOut() atau redirect)
-  };
-
   return (
     <div className="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center relative z-50">
       <button
@@ -72,13 +68,13 @@ export default function Navbar() {
         {/* Dropdown */}
         {isProfileMenuOpen && (
           <div className="absolute top-full right-2 mt-1 w-40 bg-white border shadow-md rounded-md z-50">
-            <div className="flex flex-col px-3">
+            <div className="flex flex-col p-2">
               <span className="block md:hidden w-full text-left py-2 text-sm hover:bg-gray-100 text-primary font-medium">
                 Hello, <span className="text-black">Admin</span>
               </span>
               <button
-                onClick={handleLogout}
-                className="w-full text-left py-2 text-sm hover:bg-gray-100"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="w-full text-left py-1 px-2 text-sm hover:bg-gray-100 rounded"
               >
                 Logout
               </button>
