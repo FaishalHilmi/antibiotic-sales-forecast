@@ -64,7 +64,7 @@ export default function FormLogin() {
       >
         Submit
       </button>
-      {message && <p className="text-center text-red-500">{message}</p>}
+      {message && <p className="text-center text-sm text-red-500">{message}</p>}
     </form>
   );
 }
