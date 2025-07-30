@@ -1,4 +1,5 @@
 "use client";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
@@ -21,11 +22,6 @@ export default function NavbarPOS() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const handleLogout = () => {
-    console.log("Logout clicked");
-    // TODO: Tambahkan logic logout (misalnya: signOut() atau redirect)
-  };
 
   return (
     <header className="bg-white border-b py-4 px-4 sm:px-20 flex justify-between items-center relative z-50">
@@ -67,7 +63,7 @@ export default function NavbarPOS() {
         {isProfileMenuOpen && (
           <div className="absolute top-full right-0 mt-2 w-40 bg-white border shadow-md rounded-md z-50">
             <button
-              onClick={handleLogout}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
             >
               Logout
@@ -120,9 +116,7 @@ export default function NavbarPOS() {
               Faishal Hilmy
             </span>
             <button
-              onClick={() => {
-                /* logout logic here */
-              }}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="bg-red-500 text-white px-4 py-1 rounded text-sm hover:bg-red-600 transition"
             >
               Logout
