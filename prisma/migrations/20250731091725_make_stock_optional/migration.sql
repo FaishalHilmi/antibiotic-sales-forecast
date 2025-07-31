@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Medicine" ALTER COLUMN "stock" DROP NOT NULL,
+ALTER COLUMN "stock" SET DEFAULT 0;
