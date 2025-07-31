@@ -3,7 +3,7 @@
 import InputImagePreview from "@/components/InputImagePreview";
 import InputText from "@/components/InputText";
 import SelectInput from "@/components/SelectInput";
-import { kategoriOptionsDummy } from "@/data/kategoriOptionsDummy";
+import { kategoriOptionsDummy, unitOption } from "@/data/kategoriOptionsDummy";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -13,30 +13,55 @@ export default function TambahObatFormView() {
   const [unit, setUnit] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   console.log({ name, category, price, image });
-  // }, [name, category, price, image]);
 
   const handleSubmitMedicine = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData();
-    formData.append("nama_obat", name);
-    formData.append("kategori", category);
-    formData.append("satuan", unit);
-    formData.append("harga", String(price));
-    if (image) {
-      formData.append("gambar", image);
+    try {
+      const formData = new FormData();
+      formData.append("nama_obat", name);
+      formData.append("kategori", category);
+      formData.append("satuan", unit);
+      formData.append("harga", String(price));
+      if (image) {
+        formData.append("gambar", image);
+      }
+
+      const res = await fetch("/api/obat", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage(data.message);
+        setLoading(false);
+        setTimeout(() => setMessage(""), 5000);
+
+        setName("");
+        setUnit("");
+        setCategory("");
+        setPrice(null);
+        setImage(null);
+
+        return;
+      }
+
+      setName("");
+      setUnit("");
+      setCategory("");
+      setPrice(null);
+      setImage(null);
+
+      router.push("/dashboard/obat");
+    } catch (error: any) {
+      setMessage(error.message);
+      router.refresh();
     }
-
-    await fetch("/api/obat", {
-      method: "POST",
-      body: formData,
-    });
-
-    router.push("/dashboard/obat");
   };
 
   return (
@@ -47,32 +72,32 @@ export default function TambahObatFormView() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
         <InputText
           label="Nama Obat"
-          id="nama_obat"
+          id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <SelectInput
           label="Kategori"
-          id="kategori"
+          id="category"
           value={category}
           options={kategoriOptionsDummy}
           onChange={(e) => setCategory(e.target.value)}
         />
         <InputText
           label="Harga"
-          id="harga"
+          id="price"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
         />
         <SelectInput
           label="Satuan"
-          id="satuan"
-          options={kategoriOptionsDummy}
+          id="unit"
+          options={unitOption}
           onChange={(e) => setUnit(e.target.value)}
         />
         <InputImagePreview
           label="Gambar"
-          id="gambar"
+          id="image"
           image={image}
           setImage={setImage}
         />
