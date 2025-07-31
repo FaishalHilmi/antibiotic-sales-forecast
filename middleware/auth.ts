@@ -17,8 +17,8 @@ export const authMiddleware = async (
 
   // Jika belum login, arahkan ke halaman login jika mencoba akses dashboard atau pos
   if (
-    (!token && pathname.startsWith("/dashboard")) ||
-    pathname.startsWith("/pos")
+    !token &&
+    (pathname.startsWith("/dashboard") || pathname.startsWith("/pos"))
   ) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
