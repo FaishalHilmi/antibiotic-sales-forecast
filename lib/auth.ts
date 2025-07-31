@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
         if (!isPasswordValid) throw new Error("Password salah");
 
         return {
-          id: user.id,
+          id: user.id.toString(),
           name: user.name,
           username: user.username,
           role: user.role,
@@ -44,7 +44,7 @@ export const authOptions: AuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 60,
+    // maxAge: 60,
   },
   callbacks: {
     async jwt({ token, user }: any) {
