@@ -32,9 +32,10 @@ export default function ModalTambahStok({
     <Modal isOpen={isOpen} onCloseAction={onCloseAction} title="Tambah Stok">
       <form onSubmit={handleSubmitTambahStok} className="space-y-4">
         <div className="flex flex-col gap-1">
-          <label htmlFor="jumlah">Jumlah Stok</label>
+          <label htmlFor="quantity">Jumlah Stok</label>
           <input
-            id="jumlah"
+            id="quantity"
+            name="quantity"
             type="number"
             value={jumlahTambah}
             onChange={(e) => setJumlahTambah(Number(e.target.value))}
@@ -45,15 +46,16 @@ export default function ModalTambahStok({
 
         <SelectInput
           label="Aksi"
-          id="aksi"
+          id="action"
           options={aksiOptionsDummy}
           onChange={(e) => setAksi(e.target.value)}
         />
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="keterangan">Keterangan</label>
+          <label htmlFor="note">Keterangan</label>
           <input
-            id="keterangan"
+            id="note"
+            name="note"
             type="text"
             value={keterangan}
             onChange={(e) => setKeterangan(e.target.value)}
