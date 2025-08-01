@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { PrismaAdapter } from "@auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { Credentials } from "@/types/next-auth";
 
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -49,6 +49,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
         token.username = user.username;
       }
@@ -57,7 +58,8 @@ export const authOptions: AuthOptions = {
     },
 
     async session({ session, token }: any) {
-      if (token) {
+      if (session.user) {
+        session.user.id = token.id as string;
         session.user.role = token.role;
         session.user.username = token.username;
       }
