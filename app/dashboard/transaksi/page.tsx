@@ -1,6 +1,6 @@
-import PenjualanView from "./PenjualanView";
+import TransaksiView from "./TransaksiView";
 
-export default function KelolaPenjualanPage() {
+export default function KelolaTransaksiPage() {
   return (
     <div>
       <div className="wrapper">
@@ -9,7 +9,7 @@ export default function KelolaPenjualanPage() {
           Lihat dan kelola data transaksi penjualan yang tersedia
         </p>
         <div className="table-wrapper p-4 mt-7 bg-white flex flex-col border border-gray-200 rounded-3xl">
-          <PenjualanView />
+          <TransaksiView />
         </div>
       </div>
     </div>
