@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
+import { uploadImage } from "@/utils/uploadImage";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -11,6 +12,7 @@ export const POST = async (req: NextRequest) => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
     const role = formData.get("role") as string;
+    const image = formData.get("image") as File | null;
 
     if (!name || !username || !password || !role) {
       return NextResponse.json(
@@ -23,14 +25,21 @@ export const POST = async (req: NextRequest) => {
     }
 
     let newRole: Role;
+    let imageUrl: string = "/profile-dummy.png";
 
     if (role === "Kasir") {
       newRole = Role.CASHIER;
+
+      // Hanya kalau image tersedia dan ada isinya
+      if (image && image.size > 0) {
+        const uploaded = await uploadImage(image);
+        if (uploaded) {
+          imageUrl = uploaded;
+        }
+      }
     } else {
       newRole = Role.PHARMACIST;
     }
-
-    console.log(newRole);
 
     const existingUsername = await prisma.user.findUnique({
       where: { username },
@@ -54,6 +63,7 @@ export const POST = async (req: NextRequest) => {
         username,
         password: hashedPassword,
         role: newRole,
+        imagePath: imageUrl,
       },
     });
 
