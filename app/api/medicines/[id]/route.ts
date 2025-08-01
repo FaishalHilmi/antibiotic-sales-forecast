@@ -20,6 +20,16 @@ export const GET = async (
 
     const id = Number(params.id);
 
+    if (isNaN(id)) {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: "ID obat tidak ditemukan",
+        },
+        { status: 401 }
+      );
+    }
+
     const medicine = await prisma.medicine.findUnique({
       where: {
         id,
@@ -119,7 +129,6 @@ export const DELETE = async (
     }
 
     const id = Number(params.id);
-    const deletedAt = new Date();
 
     if (isNaN(id)) {
       return NextResponse.json(
@@ -136,7 +145,7 @@ export const DELETE = async (
         id,
       },
       data: {
-        deletedAt,
+        deletedAt: new Date(),
       },
     });
 
