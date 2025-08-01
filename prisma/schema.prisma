@@ -24,14 +24,15 @@ enum StockAction {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  username    String   @unique
+  username    String    @unique
   password    String
   role        Role
   imagePath   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime? 
   transaction Transaction[]
 }
 
@@ -40,16 +41,18 @@ model Medicine {
   name                String
   category            String
   price               Decimal
-  stock               Int
+  stock               Int?      @default(0)
   unit                String
   imagePath           String
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime? 
   stockLogs           StockLog[]
   transactionDetails  DetailTransaction[]
   forecastHistory     ForecastHistory[]
   salesRecaps         SalesRecap[]
   salesRecapDetails   SalesRecapDetail[]
+  weeklySales         WeeklySales[]
 }
 
 model StockLog {
@@ -63,20 +66,21 @@ model StockLog {
 }
 
 model Transaction {
-  id             Int           @id @default(autoincrement())
+  id             String        @id 
   cashier        User          @relation(fields:[cashierId], references: [id])
   cashierId      Int
-  totalItems     Int
-  totalAmount    Decimal
+  totalItems     Int 
+  totalAmount    Decimal 
   paymentMethod  String
   createdAt      DateTime      @default(now())
+  deletedAt      DateTime?     
   details        DetailTransaction[] 
 }
 
 model DetailTransaction {
   id             Int           @id @default(autoincrement())
   transaction    Transaction   @relation(fields: [transactionId], references: [id])
-  transactionId  Int
+  transactionId  String
   medicine       Medicine      @relation(fields: [medicineId], references: [id])
   medicineId     Int
   quantity       Int
@@ -137,4 +141,20 @@ model ForecastSummary {
   avgMae         Decimal          @db.Decimal(6, 2)
   avgMape        Decimal          @db.Decimal(6, 2)
   history        ForecastHistory  @relation(fields: [historyId], references: [id])
+}
+
+model WeeklySales {
+  id            Int       @id @default(autoincrement())
+  weekNumber    Int
+  year          Int
+  startDate     DateTime
+  endDate       DateTime
+  isCompleted   Boolean   @default(false)
+  medicineId    Int
+  quantitySold  Int
+  totalRevenue  Decimal   @default(0)
+
+  medicine      Medicine  @relation(fields: [medicineId], references: [id])
+
+  @@unique([medicineId, weekNumber, year])
 }
