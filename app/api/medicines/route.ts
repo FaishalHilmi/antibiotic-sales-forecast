@@ -2,8 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import fs from "fs";
-import path from "path";
+import { uploadImage } from "@/utils/uploadImage";
 
 export const GET = async (req: NextResponse) => {
   try {
@@ -59,19 +58,11 @@ export const POST = async (req: NextRequest) => {
     let imageUrl: string = "";
 
     if (image && image.size > 0) {
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const uploaded = await uploadImage(image);
 
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
+      if (uploaded) {
+        imageUrl = uploaded;
       }
-
-      const buffer = Buffer.from(await image.arrayBuffer());
-      const fileName = `${Date.now()}-${image.name}`;
-      const filePath = path.join(uploadDir, fileName);
-
-      fs.writeFileSync(filePath, buffer);
-
-      imageUrl = `/uploads/${fileName}`;
     }
 
     await prisma.medicine.create({
