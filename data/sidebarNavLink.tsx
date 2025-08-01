@@ -21,7 +21,7 @@ export const navLinkData = [
   },
   {
     name: "Riwayat Transaksi",
-    route: "/dashboard/penjualan",
+    route: "/dashboard/transaksi",
     icon: <FileText className="w-5 h-5" />,
   },
   {
