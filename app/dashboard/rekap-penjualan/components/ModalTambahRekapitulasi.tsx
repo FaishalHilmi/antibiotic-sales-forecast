@@ -9,14 +9,14 @@ export default function ModalTambahRekapitulasi({
   onCloseAction,
   onSubmitAction,
 }: ModalTambahRekapitulasiProps) {
-  const [periode, setPeriode] = useState<string>("");
+  const [period, setPeriod] = useState<string>("");
 
   const handleSubmitRekapitulasi = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!periode) return;
-    onSubmitAction(periode);
-    setPeriode("");
+    if (!period) return;
+    onSubmitAction(period);
+    setPeriod("");
   };
 
   return (
@@ -27,13 +27,13 @@ export default function ModalTambahRekapitulasi({
     >
       <form onSubmit={handleSubmitRekapitulasi} className="space-y-4">
         <div className="flex flex-col gap-1">
-          <label htmlFor="periode">Periode</label>
+          <label htmlFor="period">Periode</label>
           <input
-            id="periode"
-            name="periode"
+            id="period"
+            name="period"
             type="date"
-            value={periode}
-            onChange={(e) => setPeriode(e.target.value)}
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
             className="border border-gray-300 rounded-lg py-1.5 px-3 outline-primary"
             required
           />
