@@ -160,45 +160,53 @@ export default function POSPage() {
         onCloseAction={() => setIsModalOpen(false)}
         title="Detail Pembayaran"
       >
-        {/* List Item */}
-        <div className="flex flex-col gap-3 mb-4">
-          {cartItems.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between text-sm sm:text-base"
+        <form>
+          {/* List Item */}
+          <div className="flex flex-col gap-3 mb-4">
+            {cartItems.map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between text-sm sm:text-base"
+              >
+                <span className="text-black">
+                  {item.name} x {item.qty}
+                </span>
+                <span className="text-black">
+                  Rp {(item.price * item.qty).toLocaleString()}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Total */}
+          <div className="flex justify-between font-semibold text-md md:text-lg mb-4">
+            <span>Total</span>
+            <span>Rp {totalPayment.toLocaleString()}</span>
+          </div>
+
+          {/* Metode Pembayaran */}
+          <div className="mb-4">
+            <label htmlFor="paymentMethod" className="block mb-2 font-medium">
+              Pilih Pembayaran
+            </label>
+            <select
+              id="paymentMethod"
+              name="paymentMethod"
+              className="border border-gray-300 rounded-lg p-2 w-full text-sm"
             >
-              <span className="text-black">
-                {item.name} x {item.qty}
-              </span>
-              <span className="text-black">
-                Rp {(item.price * item.qty).toLocaleString()}
-              </span>
-            </div>
-          ))}
-        </div>
+              <option>Cash</option>
+              <option>QRIS</option>
+            </select>
+          </div>
 
-        {/* Total */}
-        <div className="flex justify-between font-semibold text-md md:text-lg mb-4">
-          <span>Total</span>
-          <span>Rp {totalPayment.toLocaleString()}</span>
-        </div>
-
-        {/* Metode Pembayaran */}
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">Pilih Pembayaran</label>
-          <select className="border border-gray-300 rounded-lg p-2 w-full text-sm">
-            <option>Cash</option>
-            <option>QRIS</option>
-          </select>
-        </div>
-
-        {/* Bayar Button */}
-        <button
-          onClick={handlePaymentAndPrint}
-          className="bg-primary-dark text-white font-medium w-full py-2 rounded-lg"
-        >
-          Bayar Sekarang
-        </button>
+          {/* Bayar Button */}
+          <button
+            onClick={handlePaymentAndPrint}
+            className="bg-primary-dark text-white font-medium w-full py-2 rounded-lg"
+          >
+            Bayar Sekarang
+          </button>
+        </form>
       </Modal>
 
       {/* Komponen Struk untuk Cetak */}
