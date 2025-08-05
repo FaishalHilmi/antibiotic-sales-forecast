@@ -148,6 +148,7 @@ model WeeklySales {
   id            Int       @id @default(autoincrement())
   weekNumber    Int
   year          Int
+  period        Int
   startDate     DateTime
   endDate       DateTime
   isCompleted   Boolean   @default(false)
