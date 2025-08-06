@@ -118,7 +118,7 @@ model ForecastHistory {
   id              Int                @id @default(autoincrement())
   medicineId      Int
   forecastDate    DateTime
-  period          Int
+  period          String
   medicine        Medicine           @relation(fields: [medicineId], references: [id])
   forecastResults ForecastResult[]
   summary         ForecastSummary?
