@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   weight: ["400", "500", "600", "700"],
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.className} antialiased`}>
         <SessionWrapper>{children}</SessionWrapper>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );
