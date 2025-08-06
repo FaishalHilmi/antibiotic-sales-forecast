@@ -1,13 +1,16 @@
 import Link from "next/link";
 
-export const transactionColumn = [
+export const transactionColumn = (handleDelete: (id: string) => void) => [
   {
     name: "ID Transaksi",
     selector: (row: any) => row.id,
   },
   {
     name: "Tanggal Transaksi",
-    selector: (row: any) => row.date,
+    selector: (row: any) =>
+      new Intl.DateTimeFormat("id-ID", {
+        dateStyle: "full",
+      }).format(new Date(row.createdAt)),
   },
   {
     name: "Total Harga",
@@ -16,28 +19,29 @@ export const transactionColumn = [
         style: "currency",
         currency: "IDR",
         minimumFractionDigits: 0,
-      }).format(row.total),
+      }).format(row.totalAmount),
   },
   {
     name: "Nama Kasir",
-    selector: (row: any) => row.cashier,
+    selector: (row: any) => row.cashier.name,
   },
   {
     name: "Aksi",
     cell: (row: any) => (
-      <div className="flex flex-col md:flex-row gap-1 md:gap-2 py-2 md:py-0">
+      <div className="flex gap-2">
         <Link
           href={`/pos/history/${row.id}`}
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#155DFC" }}
         >
           Detail
         </Link>
-        <Link
-          href={`/pos/history/delete/${row.id}`}
+        <button
           className="bg-red-500 text-white text-xs px-3 py-2 rounded-lg"
+          onClick={() => handleDelete(row.id)}
         >
           Hapus
-        </Link>
+        </button>
       </div>
     ),
   },
