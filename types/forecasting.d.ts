@@ -5,11 +5,23 @@ export interface WeeklySalesData {
 }
 
 export interface ForecastResult {
-  bestN: number;
+  usedPeriod: number;
+  avgMape: number;
+  avgMae: number;
   bestWeights: number[];
-  evaluation: {
-    mape: number;
-    mae: number;
-  };
-  forecast: number[];
+  results: {
+    periodLabel: string;
+    actualValue: number | null;
+    forecastValue: number | null;
+    mape: number | null;
+    mae: number | null;
+  }[];
+}
+
+export interface ForecastItem {
+  periodLabel: string;
+  actualValue: number | null;
+  forecastValue: number | null;
+  mape: number | null;
+  mae: number | null;
 }
