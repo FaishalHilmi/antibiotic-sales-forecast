@@ -1,5 +1,5 @@
 "use client";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
@@ -7,6 +7,7 @@ export default function NavbarPOS() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const session = useSession();
 
   // Tutup dropdown saat klik di luar komponen
   useEffect(() => {
@@ -50,7 +51,8 @@ export default function NavbarPOS() {
         ref={profileRef}
       >
         <span className="text-black font-semibold">
-          <span className="text-primary">Hello</span>, Admin
+          <span className="text-primary">Hello</span>,{" "}
+          {session.data?.user?.name}
         </span>
         <img
           src="/profile-dummy.png"
@@ -113,7 +115,7 @@ export default function NavbarPOS() {
               className="w-10 h-10 rounded-full mb-1"
             />
             <span className="text-sm font-medium text-gray-800 mb-2">
-              Faishal Hilmy
+              {session.data?.user?.name}
             </span>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
