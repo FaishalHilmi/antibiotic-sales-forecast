@@ -154,10 +154,63 @@ export const POST = async (req: NextRequest) => {
       }
     });
 
+    // Ambil data transaksi lengkap setelah berhasil dibuat
+    const createdTransaction = await prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+      include: {
+        cashier: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        details: {
+          select: {
+            quantity: true,
+            unitPrice: true,
+            subtotal: true,
+            medicine: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!createdTransaction) {
+      throw new Error("Transaksi tidak ditemukan setelah dibuat.");
+    }
+
+    const formattedTransaction = {
+      transactionId: createdTransaction.id,
+      datetime: createdTransaction.createdAt.toLocaleString("id-ID", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short",
+      }),
+      cashierName: createdTransaction.cashier.name,
+      items: createdTransaction.details.map((detail) => ({
+        name: detail.medicine.name,
+        qty: detail.quantity,
+        price: detail.unitPrice,
+        subtotal: detail.subtotal,
+      })),
+      totalPayment: createdTransaction.totalAmount,
+    };
+
     return NextResponse.json(
       {
         succes: true,
         message: "Berhasil melakukan transaksi",
+        payload: formattedTransaction,
       },
       { status: 200 }
     );
