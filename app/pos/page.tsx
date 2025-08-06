@@ -2,49 +2,161 @@
 
 import Modal from "@/components/Modal";
 import TransactionReceipt from "@/components/TransactionReceipt";
+import Image from "next/image";
 import { CartItem } from "@/types/cart";
+import { MedicineState } from "@/types/medicine";
 import { Minus, Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ReceiptData } from "@/types/receipt";
 
 export default function POSPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [medicines, setMedicines] = useState<MedicineState[]>([]);
+  const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string>("cash");
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("cartItem");
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
 
-  // Contoh data dummy
-  const cartItems: CartItem[] = [
-    { name: "Paracetamol", price: 5000, qty: 2 },
-    { name: "Amoxicillin", price: 8000, qty: 1 },
-  ];
+  const getMedicines = async () => {
+    try {
+      const res = await fetch("/api/medicines", {
+        method: "GET",
+      });
+      const data = await res.json();
+
+      setMedicines(data.payload);
+    } catch (error) {
+      console.log("Terjadi Kesalahan");
+    }
+  };
+
+  const filteredMedicine = medicines.filter((medicine) => {
+    return medicine.name.toLowerCase().includes(search.toLowerCase());
+  });
+
+  const handleAddToCart = (medicine: MedicineState) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (item) => item.name === medicine.name
+      );
+
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item.name === medicine.name ? { ...item, qty: item.qty + 1 } : item
+        );
+      } else {
+        return [
+          ...prevItems,
+          {
+            medicineId: medicine.id,
+            name: medicine.name,
+            price: Number(medicine.price),
+            qty: 1,
+            stock: medicine.stock,
+          },
+        ];
+      }
+    });
+  };
 
   const totalPayment = cartItems.reduce(
     (total, item) => total + item.price * item.qty,
     0
   );
 
-  // Dummy Data
-  const data = [
-    { itemName: "Paracetamol", quantity: 2, price: 5000, total: 10000 },
-    { itemName: "Amoxicillin", quantity: 1, price: 8000, total: 8000 },
-    { itemName: "Vitamin C", quantity: 3, price: 4000, total: 12000 },
-  ];
-
-  const subTotal = data.reduce((sum, item) => sum + item.total, 0);
-
-  const receiptData = {
-    transactionId: "AB13132",
-    datetime: "Kamis, 17 Desember 2025 14:24 WIB",
-    cashierName: "Faishal Hilmy",
-    items: data,
-    subTotal,
+  const handleIncreaseQty = (name: string) => {
+    const medicine = medicines.find((med) => med.name === name);
+    setCartItems((prevItems) =>
+      prevItems.map((item) => {
+        if (item.name === name && medicine && item.qty < medicine.stock) {
+          return { ...item, qty: item.qty + 1 };
+        }
+        return item;
+      })
+    );
   };
 
-  const handlePaymentAndPrint = () => {
-    // (1) Simulasikan pembayaran berhasil
-    setIsModalOpen(false); // tutup modal
+  const handleDecreaseQty = (name: string) => {
+    setCartItems(
+      (prevItems) =>
+        prevItems
+          .map((item) =>
+            item.name === name ? { ...item, qty: item.qty - 1 } : item
+          )
+          .filter((item) => item.qty > 0) // Hapus kalau qty = 0
+    );
+  };
 
-    // (2) Tunggu animasi modal tutup baru cetak
-    setTimeout(() => {
-      handlePrint?.(); // cetak struk
-    }, 300); // 300ms untuk animasi close modal
+  const handleRemoveItem = (name: string) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.name !== name));
+  };
+
+  useEffect(() => {
+    getMedicines();
+  }, [medicines]);
+
+  // Simpan ke localStorage saat cart berubah
+  useEffect(() => {
+    localStorage.setItem("cartItem", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Ambil dari localStorage saat halaman dimuat
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cartItem");
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  const handlePayment = async () => {
+    const payload = cartItems.map((item, index) => ({
+      medicineId: item.medicineId,
+      quantity: item.qty,
+      unitPrice: item.price,
+      subtotal: item.price * item.qty,
+    }));
+
+    const formData = new FormData();
+    formData.append("paymentmethod", paymentMethod);
+    formData.append("items", JSON.stringify(payload));
+
+    try {
+      const res = await fetch("/api/transaction", {
+        method: "POST",
+        body: formData,
+      });
+      const req = await res.json();
+      const data = await req.payload;
+
+      setReceiptData(data);
+
+      if (!res.ok) {
+        throw new Error("Gagal menyimpan transaksi");
+      }
+
+      // // Optional: Tampilkan notifikasi berhasil
+      console.log("Transaksi berhasil");
+
+      // // Bersihkan keranjang & localStorage
+      setCartItems([]);
+      localStorage.removeItem("cartItem");
+
+      // // Tutup modal
+      setIsModalOpen(false);
+
+      // (Opsional) Cetak struk
+      setTimeout(() => {
+        handlePrint();
+      }, 300);
+    } catch (error) {
+      console.error("Error saat melakukan pembayaran:", error);
+    }
   };
 
   const handlePrint = () => window.print();
@@ -60,30 +172,52 @@ export default function POSPage() {
               type="text"
               placeholder="Cari nama obat..."
               className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-gray-300"
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="card-wrapper grid grid-cols-2 md:grid-cols-4 gap-2">
-            <div className="card col-span-1 p-2 bg-white rounded-xl">
-              <img
-                src="/medicine.png"
-                alt="Product Image"
-                className="rounded-t-lg"
-              />
-              <div className="card-footer flex flex-col gap-2 md:gap-3 mt-2">
-                <p className="font-bold md:text-xl m-0">Paracetamol</p>
-                <div className="card-description flex flex-col md:flex-row justify-between gap-1 md:gap-0 -mt-2">
-                  <span className="price font-medium text-gray-400 text-sm">
-                    Rp 5.000
-                  </span>
-                  <span className="stock font-semibold text-primary text-sm">
-                    Stok: 50
-                  </span>
+            {filteredMedicine.map((medicine, i) => (
+              <div className="card col-span-1 p-2 bg-white rounded-xl" key={i}>
+                {medicine.imagePath ? (
+                  <Image
+                    src={medicine.imagePath}
+                    alt="Product Image"
+                    className="rounded-t-lg h-36 w-full object-fill"
+                    width={500}
+                    height={100}
+                  />
+                ) : (
+                  <Image
+                    src="/profile-dummy.png"
+                    alt="Product Image"
+                    className="rounded-t-lg h-36 w-full object-fill"
+                    width={500}
+                    height={100}
+                  />
+                )}
+                <div className="card-footer flex flex-col gap-2 md:gap-3 mt-2">
+                  <p className="font-bold md:text-xl m-0">{medicine.name}</p>
+                  <div className="card-description flex flex-col md:flex-row justify-between gap-1 md:gap-0 -mt-2">
+                    <span className="price font-medium text-gray-400 text-sm">
+                      Rp {medicine.price}
+                    </span>
+                    <span className="stock font-semibold text-primary text-sm">
+                      Stok: {medicine.stock}
+                    </span>
+                  </div>
+                  <button
+                    className="text-white text-sm font-medium w-full py-2 bg-primary-dark rounded-lg"
+                    disabled={
+                      medicine.stock <= 0 ||
+                      cartItems.some((item) => item.name === medicine.name)
+                    }
+                    onClick={() => handleAddToCart(medicine)}
+                  >
+                    Tambah
+                  </button>
                 </div>
-                <button className="text-white text-sm font-medium w-full py-2 bg-primary-dark rounded-lg">
-                  Tambah
-                </button>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -97,6 +231,7 @@ export default function POSPage() {
                 className="card-list relative flex items-center gap-3 border-b-2 border-gray-200 py-4"
               >
                 <button
+                  onClick={() => handleRemoveItem(item.name)}
                   className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-red-500 transition-colors"
                   aria-label="Hapus item"
                 >
@@ -115,11 +250,18 @@ export default function POSPage() {
                     </span>
                     <div className="flex justify-between w-full">
                       <div className="card-list-left-section flex gap-4 items-center">
-                        <button className="p-1 rounded-md bg-gray-200 text-center">
+                        <button
+                          onClick={() => handleDecreaseQty(item.name)}
+                          className="p-1 rounded-md bg-gray-200 text-center"
+                        >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="font-semibold">{item.qty}</span>
-                        <button className="p-1 rounded-md bg-primary text-center text-white">
+                        <button
+                          onClick={() => handleIncreaseQty(item.name)}
+                          disabled={item.qty >= item.stock}
+                          className="p-1 rounded-md bg-primary text-center text-white"
+                        >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
@@ -147,6 +289,7 @@ export default function POSPage() {
             <button
               onClick={() => setIsModalOpen(true)}
               className="bg-primary-dark text-sm md:text-base text-white font-medium w-full py-2 rounded-lg"
+              disabled={cartItems.length > 0 ? false : true}
             >
               Lanjutkan Pembayaran
             </button>
@@ -192,16 +335,19 @@ export default function POSPage() {
             <select
               id="paymentMethod"
               name="paymentMethod"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
               className="border border-gray-300 rounded-lg p-2 w-full text-sm"
             >
-              <option>Cash</option>
-              <option>QRIS</option>
+              <option value="cash">Cash</option>
+              <option value="qris">QRIS</option>
             </select>
           </div>
 
           {/* Bayar Button */}
           <button
-            onClick={handlePaymentAndPrint}
+            type="button"
+            onClick={handlePayment}
             className="bg-primary-dark text-white font-medium w-full py-2 rounded-lg"
           >
             Bayar Sekarang
@@ -211,7 +357,20 @@ export default function POSPage() {
 
       {/* Komponen Struk untuk Cetak */}
       <div className="receipt-print hidden print:block" id="print-area">
-        <TransactionReceipt {...receiptData} />
+        {receiptData && (
+          <TransactionReceipt
+            transactionId={receiptData.transactionId}
+            datetime={receiptData.datetime}
+            cashierName={receiptData.cashierName}
+            items={receiptData.items.map((item) => ({
+              itemName: item.name,
+              quantity: item.qty,
+              price: parseInt(item.price),
+              total: parseInt(item.subtotal),
+            }))}
+            subTotal={parseInt(receiptData.totalPayment)}
+          />
+        )}
       </div>
     </div>
   );
