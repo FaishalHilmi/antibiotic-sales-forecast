@@ -23,7 +23,15 @@ export const GET = async (
         id,
       },
       include: {
-        details: true,
+        details: {
+          include: {
+            medicine: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
         cashier: {
           select: {
             id: true,
