@@ -1,3 +1,4 @@
+import { formatRupiah } from "@/utils/formatCurrency";
 import Link from "next/link";
 
 export const transactionColumn = (handleDelete: (id: string) => void) => [
@@ -44,5 +45,21 @@ export const transactionColumn = (handleDelete: (id: string) => void) => [
         </button>
       </div>
     ),
+  },
+];
+
+export const itemSummaryColumn = [
+  {
+    name: "Nama Item",
+    selector: (row: any) => row.medicine.name,
+  },
+  { name: "Jumlah", selector: (row: any) => row.quantity, sortable: true },
+  {
+    name: "Harga",
+    selector: (row: any) => formatRupiah(row.unitPrice),
+  },
+  {
+    name: "Total Harga",
+    selector: (row: any) => formatRupiah(row.subtotal),
   },
 ];
