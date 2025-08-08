@@ -63,10 +63,10 @@ export default function NavbarPOS() {
 
         {/* Dropdown */}
         {isProfileMenuOpen && (
-          <div className="absolute top-full right-0 mt-2 w-40 bg-white border shadow-md rounded-md z-50">
+          <div className="absolute top-full right-0 mt-2 w-40 bg-white border shadow-md rounded-md z-50 p-2">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+              className="w-full text-left py-1 px-2 text-sm hover:bg-gray-100 rounded"
             >
               Logout
             </button>
@@ -93,13 +93,6 @@ export default function NavbarPOS() {
             Beranda
           </Link>
           <Link
-            href="/pos/products"
-            className="p-2 w-full text-center hover:bg-gray-100"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Daftar Obat
-          </Link>
-          <Link
             href="/pos/history"
             className="p-2 w-full text-center hover:bg-gray-100"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -108,21 +101,23 @@ export default function NavbarPOS() {
           </Link>
 
           {/* User Info + Logout */}
-          <div className="p-4 w-full border-t bg-gray-50 flex flex-col items-center">
-            <img
-              src="/profile-dummy.png"
-              alt="Profile"
-              className="w-10 h-10 rounded-full mb-1"
-            />
-            <span className="text-sm font-medium text-gray-800 mb-2">
-              {session.data?.user?.name}
-            </span>
+          <div className="py-2 px-4 w-full border-t flex justify-between items-center">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-red-500 text-white px-4 py-1 rounded text-sm hover:bg-red-600 transition"
+              className="bg-primary text-white px-4 py-1.5 rounded-full text-sm hover:bg-red-600 transition"
             >
               Logout
             </button>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm">
+                Hello, <span className="text-primary">Ginsu</span>
+              </span>
+              <img
+                src="/profile-dummy.png"
+                alt="Profile"
+                className="w-8 h-8 rounded-full mb-1"
+              />
+            </div>
           </div>
         </div>
       )}
