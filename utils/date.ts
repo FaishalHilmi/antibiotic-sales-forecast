@@ -1,10 +1,13 @@
 import {
   endOfISOWeek,
+  format,
   setISOWeek,
   startOfISOWeek,
   startOfWeek,
   startOfYear,
 } from "date-fns";
+import { id } from "date-fns/locale";
+import { toZonedTime } from "date-fns-tz";
 
 // Mengembalikan tanggal awal dan akhir  dari minggu ISO ke-x pada tahun tertentu
 export const getDataRangeFromWeek = (weekNumber: number, year: number) => {
@@ -41,4 +44,16 @@ export const getWeekNumber = (date: Date) => {
   const jan1 = new Date(date.getFullYear(), 0, 1);
   const dayOfYear = Math.floor((date.getTime() - jan1.getTime()) / 86400000);
   return Math.ceil((dayOfYear + jan1.getDay() + 1) / 7);
+};
+
+const timeZone = "Asia/Jakarta";
+
+export const formatTanggal = (dateString: string | Date) => {
+  const zoned = toZonedTime(new Date(dateString), timeZone);
+  return format(zoned, "EEEE, dd MMMM yyyy", { locale: id });
+};
+
+export const formatWaktuWIB = (dateString: string | Date) => {
+  const zoned = toZonedTime(new Date(dateString), timeZone);
+  return format(zoned, "HH:mm") + " WIB";
 };
