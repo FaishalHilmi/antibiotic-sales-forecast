@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const session = await getServerSession(authOptions);
@@ -18,9 +18,10 @@ export const GET = async (
       );
     }
 
-    const id = Number(params.id);
+    const { id } = await params;
+    const medicineId = Number(id);
 
-    if (isNaN(id)) {
+    if (isNaN(medicineId)) {
       return NextResponse.json(
         {
           succes: false,
@@ -32,7 +33,7 @@ export const GET = async (
 
     const medicine = await prisma.medicine.findUnique({
       where: {
-        id,
+        id: medicineId,
       },
     });
 
@@ -51,7 +52,7 @@ export const GET = async (
 
 export const PUT = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const session = await getServerSession(authOptions);
@@ -64,12 +65,19 @@ export const PUT = async (
     }
 
     const formData = await req.formData();
-    const id = Number(params.id);
+    const { id } = await params;
+    const medicineId = Number(id);
 
-    if (isNaN(id)) {
+    const existingMedicine = await prisma.medicine.findUnique({
+      where: {
+        id: medicineId,
+      },
+    });
+
+    if (!existingMedicine) {
       return NextResponse.json({
-        succes: false,
-        message: "ID obat tidak ditemukan",
+        error: true,
+        message: "Obat tidak ditemukan.",
       });
     }
 
@@ -78,7 +86,7 @@ export const PUT = async (
     const unit = formData.get("unit") as string;
     const price = formData.get("price") as string;
     const image = formData.get("image") as File | null;
-    let imageUrl: string = "";
+    let imageUrl: string = existingMedicine.imagePath || "";
 
     if (image && image.size > 0) {
       const uploaded = await uploadImage(image);
@@ -90,7 +98,7 @@ export const PUT = async (
 
     await prisma.medicine.update({
       where: {
-        id,
+        id: medicineId,
       },
       data: {
         name,
@@ -104,7 +112,6 @@ export const PUT = async (
     return NextResponse.json({
       succes: true,
       message: "Berhasil mengubah data obat",
-      //   imageUrl,
     });
   } catch (error) {
     return NextResponse.json({
