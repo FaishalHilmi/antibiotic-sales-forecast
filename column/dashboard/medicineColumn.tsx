@@ -1,28 +1,25 @@
 "use client";
 
+import { formatRupiah } from "@/utils/formatCurrency";
 import Link from "next/link";
 
-export const medicineColumn = [
+export const medicineColumn = (handleDelete: (id: string) => void) => [
   {
     name: "Nama Obat",
     selector: (row: any) => row.name,
   },
   {
     name: "Harga",
-    selector: (row: any) =>
-      new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(row.price),
+    selector: (row: any) => formatRupiah(row.price),
   },
   {
     name: "Stok",
-    selector: (row: any) => row.stocks,
+    selector: (row: any) => row.stock,
   },
   {
     name: "Kategori",
-    selector: (row: any) => row.category,
+    selector: (row: any) =>
+      row.category.charAt(0).toUpperCase() + row.category.slice(1),
   },
   {
     name: "Aksi",
@@ -31,15 +28,16 @@ export const medicineColumn = [
         <Link
           href={`/dashboard/obat/${row.id}`}
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#155DFC" }}
         >
           Detail
         </Link>
-        <Link
-          href={`/dashboard/obat/delete/${row.id}`}
+        <button
+          onClick={() => handleDelete(row.id)}
           className="bg-red-500 text-white text-xs px-3 py-2 rounded-lg"
         >
           Hapus
-        </Link>
+        </button>
       </div>
     ),
   },
