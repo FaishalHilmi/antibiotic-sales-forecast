@@ -28,11 +28,22 @@ export default function InputImagePreview({
     setMessage("");
   };
 
+  // Tampilkan preview awal dari imagePath (string URL) jika ada
   useEffect(() => {
+    if (typeof image === "string" && image) {
+      setPreview(image);
+    } else if (image instanceof File) {
+      setPreview(URL.createObjectURL(image));
+    } else {
+      setPreview(null);
+    }
+
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview && preview.startsWith("blob:")) {
+        URL.revokeObjectURL(preview);
+      }
     };
-  }, [preview]);
+  }, [image]);
 
   return (
     <div className="flex flex-col gap-1">
