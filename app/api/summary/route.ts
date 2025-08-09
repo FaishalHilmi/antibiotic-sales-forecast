@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { lastSevenDaysProps } from "@/types/summary";
+import { LastSevenDaysProps } from "@/types/summary";
 import { format, startOfDay, subDays } from "date-fns";
 import { endOfDay } from "date-fns/fp";
 import { id } from "date-fns/locale";
@@ -57,7 +57,7 @@ export const GET = async (req: NextRequest) => {
     const totalMedicines = await prisma.medicine.count();
 
     // Data penjualan dalam 7 hari
-    const lastSevenDaysData: lastSevenDaysProps[] = [];
+    const lastSevenDaysData: LastSevenDaysProps[] = [];
 
     for (let i = 6; i >= 0; i--) {
       const date = subDays(today, i);
@@ -92,6 +92,10 @@ export const GET = async (req: NextRequest) => {
       },
       where: {
         deletedAt: null,
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
       },
       include: {
         cashier: {
