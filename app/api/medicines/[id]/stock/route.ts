@@ -4,9 +4,9 @@ import { StockAction } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (
+export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const session = await getServerSession(authOptions);
@@ -18,13 +18,85 @@ export const POST = async (
       );
     }
 
-    const medicineId = Number(params.id);
+    const { id } = await params;
+    const medicineId = Number(id);
 
-    if (isNaN(medicineId)) {
-      return NextResponse.json({
+    const stockHistory = await prisma.stockLog.findMany({
+      where: {
+        medicineId,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        medicine: {
+          select: {
+            unit: true,
+          },
+        },
+      },
+    });
+
+    if (!stockHistory) {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: "Obat tidak ditemukan",
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        succes: true,
+        message: "Berhasil mendapatkan riwayat stok obat",
+        payload: stockHistory,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
         succes: false,
-        message: "ID obat tidak ditemukan",
-      });
+        message: "Gagal mendapatkan riwayat stok obat",
+      },
+      { status: 501 }
+    );
+  }
+};
+
+export const POST = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user || !session.user.id) {
+      return NextResponse.json(
+        { error: true, meszsage: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    const medicineId = Number(id);
+
+    const existingMedicine = await prisma.medicine.findUnique({
+      where: {
+        id: medicineId,
+      },
+    });
+
+    if (!existingMedicine) {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: "Obat tidak ditemukan",
+        },
+        { status: 404 }
+      );
     }
 
     const formData = await req.formData();
@@ -83,12 +155,15 @@ export const POST = async (
 
     return NextResponse.json({
       succes: true,
-      message: "Berhasil menambahkan stok",
+      message: "Berhasil update stok",
     });
   } catch (error) {
-    return NextResponse.json({
-      succes: false,
-      message: "Gagal menambahkan stok obat",
-    });
+    return NextResponse.json(
+      {
+        succes: false,
+        message: "Gagal update stok obat",
+      },
+      { status: 501 }
+    );
   }
 };
