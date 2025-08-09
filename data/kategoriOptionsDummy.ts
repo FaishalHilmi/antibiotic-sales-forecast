@@ -27,3 +27,8 @@ export const unitOption = [
     label: "Vial",
   },
 ];
+
+export const actionOptions = [
+  { value: "tambah", label: "Tambah" },
+  { value: "kurang", label: "Kurang" },
+];
