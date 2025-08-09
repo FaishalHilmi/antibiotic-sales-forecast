@@ -1,10 +1,12 @@
 "use client";
 import { useSidebar } from "@/hooks/useSidebar";
 import { AlignLeft } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
+  const session = useSession();
+
   const { toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -56,7 +58,8 @@ export default function Navbar() {
 
       <div ref={profileRef} className="flex items-center space-x-3">
         <span className="text-black font-medium hidden md:block">
-          <span className="text-primary">Hello</span>, Admin
+          <span className="text-primary">Hello</span>,{" "}
+          {session.data?.user?.name}
         </span>
         <img
           src="/profile-dummy.png"
@@ -70,7 +73,8 @@ export default function Navbar() {
           <div className="absolute top-full right-2 mt-1 w-40 bg-white border shadow-md rounded-md z-50">
             <div className="flex flex-col p-2">
               <span className="block md:hidden w-full text-left py-2 text-sm hover:bg-gray-100 text-primary font-medium">
-                Hello, <span className="text-black">Admin</span>
+                Hello,{" "}
+                <span className="text-black">{session.data?.user?.name}</span>
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
