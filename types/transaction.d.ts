@@ -25,10 +25,43 @@ export interface Cashier {
   name: string;
 }
 
+export interface CashierName {
+  name: string;
+}
+
 export interface Medicine {
   name: string;
 }
 
 export interface TransactionProps {
   transaction: DataTransaction;
+}
+
+export interface LatestTransaction {
+  id: string;
+  cashierId: number;
+  totalItems: number;
+  totalAmount: string;
+  paymentMethod: string;
+  createdAt: string;
+  deletedAt: string | null;
+  cashier: CashierName;
+}
+
+export interface LatestTransactionProps {
+  latestTransaction: LatestTransaction[];
+}
+
+export interface TransactionsProps {
+  id: string;
+  cashierId: number;
+  totalItems: number;
+  totalAmount: string;
+  paymentMethod: string;
+  createdAt: string;
+  deletedAt: string | null;
+  cashier: {
+    id: number;
+    name: string;
+  };
 }
