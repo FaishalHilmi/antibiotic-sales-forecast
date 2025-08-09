@@ -2,26 +2,30 @@
 
 import React, { useEffect, useRef } from "react";
 import * as echarts from "echarts";
+import { weeklySalesProps } from "@/types/sales";
 
-export default function BarChart() {
+export default function BarChart({ weeklySales }: weeklySalesProps) {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!chartRef.current) return;
 
     const chart = echarts.init(chartRef.current);
+    const labels = weeklySales.map((sale) => sale.date);
+    const totals = weeklySales.map((sale) => sale.total);
 
     const option = {
       xAxis: {
         type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: labels,
       },
       yAxis: {
         type: "value",
       },
+      tooltip: { trigger: "axis" },
       series: [
         {
-          data: [120, 200, 150, 80, 70, 110, 130],
+          data: totals,
           type: "bar",
           itemStyle: {
             color: "#00A49C",
