@@ -22,3 +22,7 @@ export interface MedicineState {
   updatedAt: string;
   deletedAt: string | null;
 }
+
+export interface MedicineProps {
+  medicines: MedicineState;
+}
