@@ -24,6 +24,6 @@ export interface Option {
 export interface InputImagePreviewProps {
   label: string;
   id: string;
-  image: File | null;
+  image: string | File | null;
   setImage: (file: File | null) => void;
 }
