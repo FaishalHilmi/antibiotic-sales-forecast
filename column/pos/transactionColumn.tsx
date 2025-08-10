@@ -1,3 +1,4 @@
+import { formatTanggal } from "@/utils/date";
 import { formatRupiah } from "@/utils/formatCurrency";
 import Link from "next/link";
 
@@ -8,19 +9,11 @@ export const transactionColumn = (handleDelete: (id: string) => void) => [
   },
   {
     name: "Tanggal Transaksi",
-    selector: (row: any) =>
-      new Intl.DateTimeFormat("id-ID", {
-        dateStyle: "full",
-      }).format(new Date(row.createdAt)),
+    selector: (row: any) => formatTanggal(row.createdAt),
   },
   {
     name: "Total Harga",
-    selector: (row: any) =>
-      new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(row.totalAmount),
+    selector: (row: any) => formatRupiah(Number(row.totalAmount)),
   },
   {
     name: "Nama Kasir",
