@@ -15,18 +15,9 @@ const DataTable = dynamic(() => import("react-data-table-component"), {
 });
 
 export default function DetailTransaksiView({ transaction }: TransactionProps) {
-  // const subTotal = data.reduce((sum, item) => sum + item.total, 0);
   const date = formatTanggal(transaction.createdAt);
   const hour = formatWaktuWIB(transaction.createdAt);
   const datetime = `${date} ${hour}`;
-
-  // const receiptData = {
-  //   transactionId: transaction.id,
-  //   datetime: `${date} ${hour}`,
-  //   cashierName: transaction.cashier.name,
-  //   items: transaction.details,
-  //   subTotal: formatRupiah(Number(transaction.totalAmount)),
-  // };
 
   const handlePrint = () => window.print();
 
@@ -93,13 +84,11 @@ export default function DetailTransaksiView({ transaction }: TransactionProps) {
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex justify-between">
                 <span className="font-bold">Tanggal Pemesanan</span>
-                <span className="text-end">
-                  {formatTanggal(transaction.createdAt)}
-                </span>
+                <span className="text-end">{date}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold">Waktu Transaksi</span>
-                <span>{formatWaktuWIB(transaction.createdAt)}</span>
+                <span>{hour}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold">Jumlah Item</span>
