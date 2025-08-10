@@ -23,17 +23,18 @@ export default function TambahObatFormView() {
 
     try {
       const formData = new FormData();
-      formData.append("nama_obat", name);
-      formData.append("kategori", category);
-      formData.append("satuan", unit);
-      formData.append("harga", String(price));
+      formData.append("name", name);
+      formData.append("category", category);
+      formData.append("unit", unit);
+      formData.append("price", String(price));
       if (image) {
-        formData.append("gambar", image);
+        formData.append("image", image);
       }
 
-      const res = await fetch("/api/obat", {
+      const res = await fetch("/api/medicines", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
       const data = await res.json();
 
