@@ -10,7 +10,7 @@ export const GET = async (
   {
     params,
   }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
   }
 ) => {
   try {
@@ -26,21 +26,12 @@ export const GET = async (
       );
     }
 
-    const id = Number(params.id);
-
-    if (isNaN(id)) {
-      return NextResponse.json(
-        {
-          succes: false,
-          message: "ID rekap penjualan tidak ditemukan",
-        },
-        { status: 401 }
-      );
-    }
+    const { id } = await params;
+    const salesRecapId = Number(id);
 
     const saleRecap = await prisma.salesRecap.findUnique({
       where: {
-        id,
+        id: salesRecapId,
       },
       include: {
         recapDetails: {
@@ -68,7 +59,7 @@ export const GET = async (
 
     const topFiveMedicines = await prisma.salesRecapDetail.findMany({
       where: {
-        salesRecapId: id,
+        salesRecapId,
       },
       include: {
         medicine: true,
@@ -121,16 +112,6 @@ export const PUT = async (
     }
 
     const id = Number(params.id);
-
-    if (isNaN(id)) {
-      return NextResponse.json(
-        {
-          succes: false,
-          message: "ID rekap penjualan tidak ditemukan",
-        },
-        { status: 401 }
-      );
-    }
 
     const existingRecap = await prisma.salesRecap.findUnique({
       where: {
