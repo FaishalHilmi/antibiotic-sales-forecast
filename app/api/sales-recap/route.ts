@@ -105,6 +105,16 @@ export const POST = async (req: NextRequest) => {
       },
     });
 
+    if (transactions.length === 0) {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: `Tidak ada transaksi penjualan periode ${monthName} ${year}`,
+        },
+        { status: 404 }
+      );
+    }
+
     const medicineMap = new Map<
       number,
       { quantity: number; revenue: Decimal; name: string }
