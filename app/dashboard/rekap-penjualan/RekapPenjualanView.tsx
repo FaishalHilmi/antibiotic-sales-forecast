@@ -1,47 +1,91 @@
 "use client";
 
-import { rekapPenjualanColumn } from "@/column/dashboard/rekapPenjualanColumn";
+import { salesRecapColumn } from "@/column/dashboard/rekapPenjualanColumn";
 import { useState } from "react";
 import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
 import { dummyRekapPenjualan } from "@/data/penjualan";
 import SearchBar from "@/components/SearchBar";
 import ModalTambahRekapitulasi from "./components/ModalTambahRekapitulasi";
 import dynamic from "next/dynamic";
+import { SalesRecap } from "@/types/sales";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+import toast from "react-hot-toast";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
 });
 
-export default function RekapPenjualanView() {
+export default function RekapPenjualanView({
+  salesRecap,
+}: {
+  salesRecap: SalesRecap[];
+}) {
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [rekapData, setRekapData] = useState<any[]>(dummyRekapPenjualan);
+  const [recapData, setRecapData] = useState<SalesRecap[]>(salesRecap);
 
-  const formatPeriode = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const month = new Intl.DateTimeFormat("id-ID", { month: "long" }).format(
-      date
+  const recapDataWithPeriod = recapData.map((item) => {
+    const date = new Date(item.year, item.month - 1); // -1 karena bulan mulai dari 0
+    const monthName = format(date, "MMMM", { locale: id });
+    return {
+      ...item,
+      period: `${monthName} ${item.year}`,
+    };
+  });
+
+  const filteredDataByPeriode = recapDataWithPeriod.filter((item) => {
+    if (!search.trim()) return true;
+
+    const searchLower = search.toLowerCase();
+    return (
+      item.period.toLowerCase().includes(searchLower) ||
+      item.year.toString().includes(searchLower)
     );
-    const year = date.getFullYear();
-    return `${month} ${year}`;
+  });
+
+  const handleUpdateSalesRecap = async (salesRecapId: string) => {
+    try {
+      const res = await fetch(`/api/sales-recap/${salesRecapId}`, {
+        method: "PUT",
+        credentials: "include",
+      });
+      const req = await res.json();
+      if (!res.ok) {
+        toast.error(req.message);
+      }
+      toast.success(req.message);
+    } catch (error) {
+      toast.error("Gagal update rekapitulasi penjualan");
+    }
   };
 
-  const filteredDataByPeriode = rekapData.filter((item) =>
-    item.periode.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleAddSalesRecap = async (period: string) => {
+    console.log(period);
 
-  const handleTambahRekapitulasi = (periode: string) => {
-    const newRekapitulasi = {
-      id: dummyRekapPenjualan.length + 1,
-      periode: formatPeriode(periode),
-      totalPenjualan: 0,
-      totalObatTerjual: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    try {
+      const formData = new FormData();
+      formData.append("period", period);
 
-    setRekapData([newRekapitulasi, ...rekapData]);
-    setShowModal(false);
+      const res = await fetch("/api/sales-recap", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const req = await res.json();
+
+      if (!res.ok) {
+        toast.error(req.message || "Gagal menambahkan rekapitulasi penjualan");
+        return;
+      }
+
+      toast.success(
+        req.message || "Berhasil menambahkan rekapitulasi penjualan"
+      );
+      setShowModal(false);
+    } catch (error) {
+      toast.error("Gagal menambahkan rekapitulasi penjualan");
+    }
   };
 
   return (
@@ -60,7 +104,7 @@ export default function RekapPenjualanView() {
         />
       </div>
       <DataTable
-        columns={rekapPenjualanColumn}
+        columns={salesRecapColumn(handleUpdateSalesRecap)}
         data={filteredDataByPeriode}
         responsive
         pagination
@@ -70,7 +114,7 @@ export default function RekapPenjualanView() {
       <ModalTambahRekapitulasi
         isOpen={showModal}
         onCloseAction={() => setShowModal(false)}
-        onSubmitAction={handleTambahRekapitulasi}
+        onSubmitAction={handleAddSalesRecap}
       />
     </div>
   );
