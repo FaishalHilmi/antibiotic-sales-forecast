@@ -1,13 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import dynamic from "next/dynamic";
-import {
-  rekapPengeluanColumn,
-  rekapPenjualanObatColumn,
-  rekapPeramalanColumn,
-} from "@/column/dashboard/rekapPenjualanColumn";
+import { rekapPenjualanObatColumn } from "@/column/dashboard/rekapPenjualanColumn";
 import { dataObat, pengeluaranData, peramalanData } from "@/data/rekapitulasi";
 import { getChartDataUrl } from "@/utils/convertChartToImage";
 import { barOptionsRekapPenjualan } from "@/chart/barOptionsRekapPenjualan";
@@ -15,26 +11,37 @@ import { customDataTableStyles } from "@/components/datatable/tableStyle";
 import InformasiUmum from "./components/InformasiUmum";
 import TandaTangan from "./components/TandaTangan";
 import HeaderRekap from "./components/HeaderRekap";
+import { DataTopFiveMedicines, SaleRecap } from "@/types/sales";
+import { formatTanggal } from "@/utils/date";
+import { id } from "date-fns/locale";
+import { format } from "date-fns";
+import { formatRupiah } from "@/utils/formatCurrency";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
 });
 
-export default function DetailRekapView() {
+export default function DetailRekapView({
+  saleRecap,
+  dataTopFiveMedicines,
+}: {
+  saleRecap: SaleRecap;
+  dataTopFiveMedicines: DataTopFiveMedicines[];
+}) {
   const [search, setSearch] = useState<string>("");
   const [chartImage, setChartImage] = useState<string>("");
   const chartRef = useRef<ReactECharts | null>(null);
 
-  useEffect(() => {
-    const updateChartImage = () => {
-      const url = getChartDataUrl(chartRef);
-      if (url) setChartImage(url);
-    };
-
-    updateChartImage();
-    window.addEventListener("beforeprint", updateChartImage);
-    return () => window.removeEventListener("beforeprint", updateChartImage);
-  }, []);
+  const year = saleRecap.year;
+  const date = new Date(year, saleRecap.month - 1); // -1 karena bulan mulai dari 0
+  const monthName = format(date, "MMMM", { locale: id });
+  const latestDate = format(saleRecap.updatedAt, "d MMMM yyyy", { locale: id });
+  const createdAt = formatTanggal(saleRecap.updatedAt);
+  const totalSoldQuantity = saleRecap.totalSoldQuantity;
+  const totalTransactions = saleRecap.totalTransactions;
+  const grossRevenue = formatRupiah(Number(saleRecap.grossRevenue));
+  const topSellingMedicine = saleRecap.topSellingMedicine;
+  const recapDetails = saleRecap.recapDetails;
 
   const handlePrint = async () => {
     const url = getChartDataUrl(chartRef);
@@ -85,18 +92,20 @@ export default function DetailRekapView() {
             <h2 className="text-xl font-semibold uppercase">
               Rekapitulasi Penjualan Obat
             </h2>
-            <p className="text-sm">Periode: Juli 2025</p>
+            <p className="text-sm">
+              Periode: {monthName} {year}
+            </p>
           </div>
         </div>
 
         <div className="space-y-8">
           {/* Informasi Umum */}
           <InformasiUmum
-            createdAt="1 Agustus 2025"
-            jumlahTransaksi={30}
-            totalObat={totalObat}
-            totalHarga={totalHarga}
-            topObat={dataObat[0].nama}
+            createdAt={createdAt}
+            jumlahTransaksi={totalTransactions}
+            totalObat={totalSoldQuantity}
+            totalHarga={grossRevenue}
+            topObat={topSellingMedicine}
           />
 
           {/* Tabel Detail Penjualan */}
@@ -106,7 +115,7 @@ export default function DetailRekapView() {
             </h3>
             <DataTable
               columns={rekapPenjualanObatColumn}
-              data={filteredData}
+              data={recapDetails}
               customStyles={customDataTableStyles}
             />
           </div>
@@ -121,7 +130,7 @@ export default function DetailRekapView() {
               <div className="block print:hidden w-full overflow-x-auto">
                 <ReactECharts
                   ref={chartRef}
-                  option={barOptionsRekapPenjualan}
+                  option={barOptionsRekapPenjualan(dataTopFiveMedicines)}
                   className="w-full h-96"
                 />
               </div>
@@ -140,7 +149,7 @@ export default function DetailRekapView() {
           </div>
 
           {/* Tabel Ringkasan Pengeluaran */}
-          <div className="bg-gray-50 border rounded-md shadow-sm p-4">
+          {/* <div className="bg-gray-50 border rounded-md shadow-sm p-4">
             <h3 className="font-semibold text-lg md:text-xl mb-3">
               Rekap Pengeluaran Obat 4 Minggu Terakhir
             </h3>
@@ -149,10 +158,10 @@ export default function DetailRekapView() {
               data={pengeluaranData}
               customStyles={customDataTableStyles}
             />
-          </div>
+          </div> */}
 
           {/* Tabel Peramalan */}
-          <div className="bg-gray-50 border rounded-md shadow-sm p-4">
+          {/* <div className="bg-gray-50 border rounded-md shadow-sm p-4">
             <h3 className="font-semibold text-lg md:text-xl mb-3">
               Peramalan Penjualan Obat 4 Minggu Mendatang
             </h3>
@@ -161,10 +170,10 @@ export default function DetailRekapView() {
               data={peramalanData}
               customStyles={customDataTableStyles}
             />
-          </div>
+          </div> */}
         </div>
         {/* Tanda Tangan */}
-        <TandaTangan createdAt="1 Agustus 2025" />
+        <TandaTangan createdAt={latestDate} />
       </div>
     </div>
   );
