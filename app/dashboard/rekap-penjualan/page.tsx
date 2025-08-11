@@ -1,6 +1,27 @@
+import { cookies } from "next/headers";
 import RekapPenjualanView from "./RekapPenjualanView";
 
-export default function RekapPenjualanPage() {
+export default async function RekapPenjualanPage() {
+  const cookieStore = await cookies();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/sales-recap`,
+    {
+      method: "GET",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    }
+  );
+  const req = await res.json();
+
+  if (!res.ok) {
+    throw new Error(req.message || "Gagal fetch API");
+  }
+
+  const salesRecap = req.payload;
+
   return (
     <div>
       <div className="wrapper">
@@ -8,7 +29,7 @@ export default function RekapPenjualanPage() {
         <p className="text-primary mb-4">
           Lihat dan kelola data penjualan yang tersedia
         </p>
-        <RekapPenjualanView />
+        <RekapPenjualanView salesRecap={salesRecap} />
       </div>
     </div>
   );
