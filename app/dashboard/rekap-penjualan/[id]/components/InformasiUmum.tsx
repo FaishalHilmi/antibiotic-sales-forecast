@@ -8,7 +8,7 @@ export default function InformasiUmum({
   createdAt: string;
   jumlahTransaksi: number;
   totalObat: number;
-  totalHarga: number;
+  totalHarga: string;
   topObat: string;
 }) {
   return (
@@ -24,11 +24,11 @@ export default function InformasiUmum({
         </tr>
         <tr>
           <td className="font-semibold">Total Obat Terjual</td>
-          <td>: {totalObat} strip</td>
+          <td>: {totalObat} Item</td>
         </tr>
         <tr>
           <td className="font-semibold">Pendapatan Kotor</td>
-          <td>: Rp {totalHarga.toLocaleString("id-ID")}</td>
+          <td>: {totalHarga}</td>
         </tr>
         <tr>
           <td className="font-semibold">Obat Terbanyak Terjual</td>
