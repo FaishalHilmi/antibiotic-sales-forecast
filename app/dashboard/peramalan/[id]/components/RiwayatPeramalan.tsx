@@ -1,37 +1,31 @@
 "use client";
 
-import { riwayatPeramalanColumn } from "@/column/dashboard/peramalan";
+import { historyForecastColumn } from "@/column/dashboard/peramalan";
 import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
+import { formatTanggal } from "@/utils/date";
+import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
 });
 
 export default function RiwayatPeramalan({
-  riwayatPeramalan,
+  historyForecast,
 }: {
-  riwayatPeramalan: {
+  historyForecast: {
     id: number;
-    tanggalPeramalan: string;
-    periodePeramalan: string;
+    forecastDate: string;
+    period: string;
   }[];
 }) {
   const [search, setSearch] = useState<string>("");
 
-  const filteredData = riwayatPeramalan.filter((item) => {
-    const tanggalFormatted = new Date(item.tanggalPeramalan).toLocaleDateString(
-      "id-ID",
-      {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }
-    );
+  const filteredData = historyForecast.filter((item) => {
+    const forecastDate = formatTanggal(new Date(item.forecastDate));
 
-    return tanggalFormatted.toLowerCase().includes(search.toLowerCase());
+    return forecastDate.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
@@ -45,7 +39,7 @@ export default function RiwayatPeramalan({
         />
       </div>
       <DataTable
-        columns={riwayatPeramalanColumn}
+        columns={historyForecastColumn}
         data={filteredData}
         responsive
         pagination
