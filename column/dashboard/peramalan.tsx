@@ -1,11 +1,12 @@
 "use client";
 
+import { formatTanggal } from "@/utils/date";
 import Link from "next/link";
 
-export const peramalanColumn = [
+export const forecastColumn = [
   {
     name: "No",
-    selector: (row: any) => row.id,
+    selector: (_row: any, index: any) => index + 1,
   },
   {
     name: "Nama Obat",
@@ -13,12 +14,9 @@ export const peramalanColumn = [
   },
   {
     name: "Kategori",
-    selector: (row: any) => row.category,
+    selector: (row: any) =>
+      row.category.charAt(0).toUpperCase() + row.category.slice(1),
   },
-  //   {
-  //     name: "Jumlah Terjua",
-  //     selector: (row: any) => row.stocks,
-  //   },
   {
     name: "Aksi",
     cell: (row: any) => (
@@ -26,6 +24,7 @@ export const peramalanColumn = [
         <Link
           href={`/dashboard/peramalan/${row.id}`}
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#155DFC" }}
         >
           Detail
         </Link>
@@ -34,31 +33,27 @@ export const peramalanColumn = [
   },
 ];
 
-export const riwayatPeramalanColumn = [
+export const historyForecastColumn = [
   {
     name: "No",
-    selector: (row: any) => row.id,
+    selector: (_row: any, index: any) => index + 1,
   },
   {
     name: "Tanggal Peramalan",
-    selector: (row: any) =>
-      new Date(row.tanggalPeramalan).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }),
+    selector: (row: any) => formatTanggal(new Date(row.forecastDate)),
   },
   {
     name: "Periode Peramalan",
-    selector: (row: any) => row.periodePeramalan,
+    selector: (row: any) => row.period,
   },
   {
     name: "Aksi",
     cell: (row: any) => (
       <div className="flex flex-col md:flex-row gap-1 md:gap-2 py-2 md:py-0">
         <Link
-          href={`/dashboard/peramalan/${row.id}/detail/${row.id}`}
+          href={`/dashboard/peramalan/${row.medicineId}/detail/${row.id}`}
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#155DFC" }}
         >
           Detail
         </Link>
@@ -68,11 +63,16 @@ export const riwayatPeramalanColumn = [
 ];
 
 export const detailRiwayatPeramalanColumn = [
-  { name: "Periode", selector: (row: any) => row.periode },
-  { name: "Aktual", selector: (row: any) => row.aktual },
+  { name: "Periode", selector: (row: any) => row.periodLabel },
+  {
+    name: "Aktual",
+    selector: (row: any) =>
+      row.actualValue !== null ? `${row.actualValue}` : "-",
+  },
   {
     name: "Peramalan",
-    selector: (row: any) => (row.peramalan !== null ? `${row.peramalan}` : "-"),
+    selector: (row: any) =>
+      row.forecastValue !== null ? `${row.forecastValue}` : "-",
   },
   {
     name: "MAPE",
