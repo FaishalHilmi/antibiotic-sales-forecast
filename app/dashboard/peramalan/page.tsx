@@ -1,6 +1,25 @@
+import { cookies } from "next/headers";
 import PeramalanView from "./PeramalanView";
+import toast from "react-hot-toast";
 
-export default function PeramalanPage() {
+export default async function PeramalanPage() {
+  const cookieStore = await cookies();
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/forecast`, {
+    method: "GET",
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Gagal Fetch API - Status ${res.status}`);
+  }
+
+  const req = await res.json();
+  const forecastMedicines = req.payload;
+
   return (
     <div>
       <div className="wrapper">
@@ -9,7 +28,7 @@ export default function PeramalanPage() {
           Lihat peramalan penjualan obat untuk membantu perencanaan stok
           mingguan
         </p>
-        <PeramalanView />
+        <PeramalanView forecastMedicines={forecastMedicines} />
       </div>
     </div>
   );
