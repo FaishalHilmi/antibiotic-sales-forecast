@@ -4,17 +4,23 @@ import SearchBar from "@/components/SearchBar";
 import dynamic from "next/dynamic";
 import { headersBoldStyle } from "@/components/datatable/headersBoldStyle";
 import { useState } from "react";
-import { peramalanColumn } from "@/column/dashboard/peramalan";
-import { peramalanDummyData } from "@/data/peramalan";
+import { forecastColumn } from "@/column/dashboard/peramalan";
+import { ForecastMedicines } from "@/types/forecasting";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
 });
 
-export default function PeramalanView() {
+export default function PeramalanView({
+  forecastMedicines,
+}: {
+  forecastMedicines: ForecastMedicines[];
+}) {
   const [search, setSearch] = useState<string>("");
+  const [medicines, setMedicines] =
+    useState<ForecastMedicines[]>(forecastMedicines);
 
-  const filteredData = peramalanDummyData.filter((item) => {
+  const filteredMedicinesData = medicines.filter((item) => {
     return item.name.toLowerCase().includes(search.toLowerCase());
   });
 
@@ -28,8 +34,8 @@ export default function PeramalanView() {
         />
       </div>
       <DataTable
-        columns={peramalanColumn}
-        data={filteredData}
+        columns={forecastColumn}
+        data={filteredMedicinesData}
         responsive
         pagination
         highlightOnHover
