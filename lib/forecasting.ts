@@ -1,6 +1,6 @@
 import {
+  ForecastCalculationResult,
   ForecastItem,
-  ForecastResult,
   WeeklySalesData,
 } from "@/types/forecasting";
 import { meanAbsoluteError, meanAbsolutePercentageError } from "./errors";
@@ -8,11 +8,12 @@ import { weightedMovingAverage } from "./wieghtMovingAverage";
 
 export function calculateForecast(
   salesData: WeeklySalesData[]
-): ForecastResult {
-  const sortedData = [...salesData].sort((a, b) => {
-    if (a.year !== b.year) return a.year - b.year;
-    return a.weekNumber - b.weekNumber;
-  });
+): ForecastCalculationResult {
+  // const sortedData = [...salesData].sort((a, b) => {
+  //   if (a.year !== b.year) return a.year - b.year;
+  //   return a.weekNumber - b.weekNumber;
+  // });
+  const sortedData = [...salesData].sort((a, b) => a.period - b.period);
 
   const data = sortedData.map((d) => d.quantitySold);
 
