@@ -1,5 +1,5 @@
 export interface WeeklySalesData {
-  weekNumber: number;
+  period: number;
   year: number;
   quantitySold: number;
 }
@@ -9,13 +9,15 @@ export interface ForecastResult {
   avgMape: number;
   avgMae: number;
   bestWeights: number[];
-  results: {
-    periodLabel: string;
-    actualValue: number | null;
-    forecastValue: number | null;
-    mape: number | null;
-    mae: number | null;
-  }[];
+  results: ForecastItem[];
+}
+
+export interface ForecastCalculationResult {
+  usedPeriod: number;
+  avgMape: number;
+  avgMae: number;
+  bestWeights: number[];
+  results: ForecastItem[];
 }
 
 export interface ForecastItem {
