@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  context: { params: { historyId: string } }
+  context: { params: { historyId: string; id: string } }
 ) => {
   try {
     const session = await getServerSession(authOptions);
@@ -17,29 +17,17 @@ export const GET = async (
       );
     }
 
-    // const historyId = Number(params.historyId);
-    const { historyId } = await context.params;
+    const { historyId, id } = await context.params;
     const parsedHistoryId = Number(historyId);
+    const medicineId = Number(id);
 
-    if (isNaN(parsedHistoryId)) {
-      return NextResponse.json(
-        {
-          succes: false,
-          message: "ID riwayat tidak ditemukan",
-        },
-        { status: 404 }
-      );
-    }
-
-    const forecastResult = await prisma.forecastResult.findMany({
+    const forecastingResult = await prisma.forecastResult.findMany({
       where: {
         historyId: parsedHistoryId,
       },
     });
 
-    console.log("forecastResult", forecastResult.length);
-
-    if (forecastResult.length == 0) {
+    if (forecastingResult.length == 0) {
       return NextResponse.json(
         {
           succes: false,
@@ -49,11 +37,42 @@ export const GET = async (
       );
     }
 
+    const forecastingSummary = await prisma.forecastSummary.findUnique({
+      where: {
+        historyId: parsedHistoryId,
+      },
+      select: {
+        weightMethod: true,
+        avgMae: true,
+        avgMape: true,
+      },
+    });
+
+    if (!forecastingSummary) {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: "Tidak ada ringkasan riwayat peramalan",
+        },
+        { status: 404 }
+      );
+    }
+
+    const medicine = await prisma.medicine.findUnique({
+      where: {
+        id: medicineId,
+      },
+    });
+
     return NextResponse.json(
       {
         succes: true,
         message: "Berhasil mendapatkan detail riwayat peramalan",
-        payload: forecastResult,
+        payload: {
+          forecastingResult,
+          forecastingSummary,
+          medicine,
+        },
       },
       { status: 201 }
     );
