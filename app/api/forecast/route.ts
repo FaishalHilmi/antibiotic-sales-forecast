@@ -26,7 +26,7 @@ export const GET = async (req: NextRequest) => {
       {
         succes: true,
         message: "Berhasil mendapatkan data obat antibiotik",
-        antibioticMedicines,
+        payload: antibioticMedicines,
       },
       { status: 201 }
     );
