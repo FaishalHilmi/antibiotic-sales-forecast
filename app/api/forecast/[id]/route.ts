@@ -9,7 +9,7 @@ import { authOptions } from "@/lib/auth";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   let medicineName: string = "";
 
@@ -23,20 +23,31 @@ export const GET = async (
       );
     }
 
-    const medicineId = Number(params.id);
+    const { id } = await params;
+    const medicineId = Number(id);
 
-    const medicineForecastDetail = await prisma.forecastHistory.findFirst({
+    const existingMedicine = await prisma.medicine.findUnique({
+      where: {
+        id: medicineId,
+      },
+      select: {
+        id: true,
+        name: true,
+        category: true,
+        price: true,
+      },
+    });
+
+    if (!existingMedicine) {
+      return NextResponse.json({
+        succes: false,
+        message: "ID obat tidak ditemukan",
+      });
+    }
+
+    const medicineForecastDetail = await prisma.forecastHistory.findMany({
       where: {
         medicineId,
-      },
-      include: {
-        medicine: {
-          select: {
-            name: true,
-            category: true,
-            price: true,
-          },
-        },
       },
     });
 
@@ -50,13 +61,16 @@ export const GET = async (
       );
     }
 
-    medicineName = medicineForecastDetail.medicine.name;
+    medicineName = existingMedicine.name;
 
     return NextResponse.json(
       {
         succes: true,
         message: `Berhasil mendapatkan detail peramalan obat ${medicineName}`,
-        payload: medicineForecastDetail,
+        payload: {
+          medicine: existingMedicine,
+          medicineForecastDetail,
+        },
       },
       { status: 201 }
     );
@@ -73,11 +87,11 @@ export const GET = async (
 
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
+    // 1️⃣ Cek session login
     const session = await getServerSession(authOptions);
-
     if (!session || !session.user || !session.user.name) {
       return NextResponse.json(
         { error: true, message: "Unauthorized" },
@@ -85,8 +99,9 @@ export const POST = async (
       );
     }
 
-    const medicineId = parseInt(params.id);
-
+    // 2️⃣ Ambil dan validasi medicineId
+    const { id } = await params;
+    const medicineId = Number(id);
     if (isNaN(medicineId)) {
       return NextResponse.json(
         { success: false, message: "Invalid medicine ID" },
@@ -94,16 +109,14 @@ export const POST = async (
       );
     }
 
+    // 3️⃣ Tentukan minggu awal perhitungan
     const today = new Date();
     const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
-
-    // 1. Ambil minggu terakhir yang sudah isCompleted untuk obat ini
     const lastCompleted = await prisma.weeklySales.findFirst({
       where: { isCompleted: true, medicineId },
       orderBy: [{ year: "desc" }, { weekNumber: "desc" }],
     });
 
-    // 2. Hitung minggu mulai dari setelah minggu terakhir
     let startDate = lastCompleted
       ? addWeeks(
           startOfWeek(new Date(lastCompleted.endDate), { weekStartsOn: 1 }),
@@ -111,25 +124,23 @@ export const POST = async (
         )
       : startOfWeek(new Date("2024-01-01"), { weekStartsOn: 1 });
 
-    // 3. Ambil period terakhir
+    // 4️⃣ Tentukan period awal (TIDAK RESET tiap tahun)
     const lastPeriod = await prisma.weeklySales.findFirst({
       where: { medicineId },
       orderBy: [{ period: "desc" }],
     });
     let period = lastPeriod ? lastPeriod.period + 1 : 1;
 
+    // 5️⃣ Loop per minggu hingga minggu sekarang
     while (isBefore(startDate, currentWeekStart)) {
       const endDate = endOfWeek(startDate, { weekStartsOn: 1 });
 
-      // 4. Ambil transaksi minggu ini untuk medicineId tertentu
+      // Ambil transaksi minggu ini untuk medicineId
       const transactions = await prisma.detailTransaction.findMany({
         where: {
           medicineId,
           transaction: {
-            createdAt: {
-              gte: startDate,
-              lte: endDate,
-            },
+            createdAt: { gte: startDate, lte: endDate },
             deletedAt: null,
           },
         },
@@ -145,16 +156,12 @@ export const POST = async (
           0
         );
 
-        const weekNumber = getWeekNumber(startDate);
+        const weekNumber = getWeekNumber(startDate); // Reset tiap awal tahun
         const year = startDate.getFullYear();
 
-        // Cek apakah data sudah ada
+        // Cek apakah data minggu ini sudah ada
         const existing = await prisma.weeklySales.findFirst({
-          where: {
-            medicineId,
-            weekNumber,
-            year,
-          },
+          where: { medicineId, weekNumber, year },
         });
 
         if (!existing) {
@@ -178,12 +185,11 @@ export const POST = async (
       startDate = addWeeks(startDate, 1); // lanjut minggu berikutnya
     }
 
+    // 6️⃣ Ambil semua data weeklySales untuk forecast
     const weeklySales = await prisma.weeklySales.findMany({
       where: { medicineId },
-      orderBy: { weekNumber: "asc" },
+      orderBy: { period: "asc" },
     });
-
-    // const quantitySold = weeklySales.map((data) => Number(data.quantitySold));
 
     if (weeklySales.length < 3) {
       return NextResponse.json(
@@ -192,9 +198,10 @@ export const POST = async (
       );
     }
 
+    // 7️⃣ Hitung forecast
     const forecastResult = calculateForecast(
       weeklySales.map((data) => ({
-        weekNumber: data.weekNumber,
+        period: data.period,
         year: data.year,
         quantitySold: Number(data.quantitySold),
       }))
@@ -204,6 +211,7 @@ export const POST = async (
       forecastResult.results.length
     }`;
 
+    // 8️⃣ Simpan history forecast
     const forecastHistory = await prisma.forecastHistory.create({
       data: {
         medicineId,
@@ -228,12 +236,12 @@ export const POST = async (
       },
     });
 
+    // 9️⃣ Response sukses
     return NextResponse.json({
       success: true,
       message: "Berhasil melakukan peramalan untuk ID obat: " + medicineId,
-      // weeklySales,
       forecastHistory,
-      periodValue,
+      weeklySales,
     });
   } catch (error) {
     console.error(error);
