@@ -4,10 +4,41 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
 export default function NavbarPOS() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
+  const [userImage, setUserImage] = useState<string>("");
   const profileRef = useRef<HTMLDivElement>(null);
   const session = useSession();
+  const userId = session?.data?.user?.id;
+
+  const getDataUser = async () => {
+    try {
+      const res = await fetch(`/api/account/${userId}`, {
+        method: "GET",
+      });
+      const req = await res.json();
+
+      if (!res.ok) {
+        throw new Error(req.message);
+      }
+
+      const user = req.payload;
+
+      setUserImage(user.imagePath);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      getDataUser();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    console.log(userImage);
+  }, [userImage]);
 
   // Tutup dropdown saat klik di luar komponen
   useEffect(() => {
@@ -36,7 +67,7 @@ export default function NavbarPOS() {
       </div>
 
       {/* Tengah - Menu Desktop */}
-      <nav className="hidden md:flex space-x-6">
+      <nav className="hidden md:flex space-x-6 font-medium">
         <Link href="/pos" className="text-black hover:text-primary">
           Beranda
         </Link>
@@ -50,12 +81,12 @@ export default function NavbarPOS() {
         className="hidden md:flex items-center space-x-3 relative"
         ref={profileRef}
       >
-        <span className="text-black font-semibold">
+        <span className="text-black font-semibold capitalize">
           <span className="text-primary">Hello</span>,{" "}
           {session.data?.user?.name}
         </span>
         <img
-          src="/profile-dummy.png"
+          src={userImage ? userImage : "/profile-dummy.png"}
           alt="Profile"
           className="w-8 h-8 rounded-full cursor-pointer"
           onClick={() => setIsProfileMenuOpen((prev) => !prev)}
@@ -84,7 +115,7 @@ export default function NavbarPOS() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border-t flex flex-col items-center md:hidden shadow-custom z-50">
+        <div className="absolute top-full left-0 w-full bg-white border-t flex flex-col items-center md:hidden shadow-custom z-50 font-medium">
           <Link
             href="/pos"
             className="p-2 w-full text-center hover:bg-gray-100"
@@ -104,11 +135,11 @@ export default function NavbarPOS() {
           <div className="py-2 px-4 w-full border-t flex justify-between items-center">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-primary text-white px-4 py-1.5 rounded-full text-sm hover:bg-red-600 transition"
+              className="bg-primary text-white px-4 py-1.5 rounded-full text-sm hover:bg-primary-dark transition"
             >
               Logout
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 capitalize">
               <span className="font-semibold text-sm">
                 Hello, <span className="text-primary">Ginsu</span>
               </span>
