@@ -1,17 +1,19 @@
 import Link from "next/link";
 
-export const CashierManageColoumn = [
+export const CashierManageColoumn = (handleDelete: (id: string) => void) => [
   {
     name: "No",
-    selector: (row: any) => row.id,
+    selector: (_row: any, index: any) => index + 1,
   },
   {
     name: "Nama",
-    selector: (row: any) => row.name,
+    selector: (row: any) =>
+      row.name.charAt(0).toUpperCase() + row.name.slice(1),
   },
   {
     name: "Role",
-    selector: (row: any) => row.name,
+    selector: (row: any) =>
+      row.role.charAt(0).toUpperCase() + row.role.slice(1),
   },
   {
     name: "Aksi",
@@ -20,15 +22,17 @@ export const CashierManageColoumn = [
         <Link
           href={`/dashboard/kelola-kasir/${row.id}`}
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#155DFC" }}
         >
           Detail
         </Link>
-        <Link
-          href={`/dashboard/kelola-kasir/delete/${row.id}`}
+        <button
+          onClick={() => handleDelete(row.id)}
           className="bg-red-500 text-white text-xs px-3 py-2 rounded-lg"
+          style={{ background: "#FB2C36" }}
         >
           Hapus
-        </Link>
+        </button>
       </div>
     ),
   },
