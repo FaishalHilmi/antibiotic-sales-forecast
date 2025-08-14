@@ -57,7 +57,7 @@ export default function Navbar() {
       </div>
 
       <div ref={profileRef} className="flex items-center space-x-3">
-        <span className="text-black font-medium hidden md:block">
+        <span className="text-black font-medium hidden md:block capitalize">
           <span className="text-primary">Hello</span>,{" "}
           {session.data?.user?.name}
         </span>
