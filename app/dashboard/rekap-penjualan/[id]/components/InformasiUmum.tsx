@@ -20,7 +20,7 @@ export default function InformasiUmum({
         </tr>
         <tr>
           <td className="font-semibold">Jumlah Transaksi</td>
-          <td>: {jumlahTransaksi}</td>
+          <td>: {jumlahTransaksi} Transaksi</td>
         </tr>
         <tr>
           <td className="font-semibold">Total Obat Terjual</td>
