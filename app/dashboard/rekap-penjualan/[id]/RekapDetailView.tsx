@@ -16,6 +16,7 @@ import { formatTanggal } from "@/utils/date";
 import { id } from "date-fns/locale";
 import { format } from "date-fns";
 import { formatRupiah } from "@/utils/formatCurrency";
+import Link from "next/link";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
@@ -64,12 +65,13 @@ export default function DetailRekapView({
     <div className="space-y-6">
       {/* Tombol Aksi */}
       <div className="flex gap-2 no-print">
-        <button
-          onClick={() => history.back()}
+        <Link
+          // onClick={() => history.back()}
+          href={"/dashboard/rekap-penjualan"}
           className="px-4 py-2 bg-gray-500 text-white rounded-md"
         >
           Kembali
-        </button>
+        </Link>
         <button
           onClick={handlePrint}
           className="px-4 py-2 bg-primary text-white rounded-md"
