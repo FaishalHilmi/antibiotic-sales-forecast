@@ -1,7 +1,7 @@
 import { StockHistoryProps } from "@/types/stocks";
 
 export default function RiwayatStok({
-  riwayatStok,
+  stockHistory,
   setShowModaTambah,
 }: StockHistoryProps) {
   return (
@@ -17,20 +17,26 @@ export default function RiwayatStok({
       </div>
 
       <div className="space-y-3">
-        {riwayatStok.length === 0 ? (
+        {stockHistory.length === 0 ? (
           <p className="text-sm text-gray-500">
             Belum ada riwayat penambahan stok.
           </p>
         ) : (
-          riwayatStok.map((item) => (
+          stockHistory.map((item) => (
             <div
               key={item.id}
               className="bg-gray-50 p-3 rounded-lg border text-sm"
             >
-              <div className="font-medium text-green-600">
-                +{item.jumlah} unit
-              </div>
-              <div className="text-gray-500">{item.keterangan}</div>
+              {item.action == "IN" ? (
+                <div className="font-medium text-green-600">
+                  + {item.quantity} {item.medicine.unit}
+                </div>
+              ) : (
+                <div className="font-medium text-red-600">
+                  - {item.quantity} {item.medicine.unit}
+                </div>
+              )}
+              <div className="text-gray-500">{item.note}</div>
             </div>
           ))
         )}
