@@ -6,6 +6,7 @@ import SelectInput from "@/components/SelectInput";
 import { kategoriOptionsDummy, unitOption } from "@/data/kategoriOptionsDummy";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function TambahObatFormView() {
   const [image, setImage] = useState<File | null>(null);
@@ -39,9 +40,10 @@ export default function TambahObatFormView() {
       const data = await res.json();
 
       if (!res.ok) {
-        setMessage(data.message);
+        toast.error(data.message);
+        // setMessage(data.message);
         setLoading(false);
-        setTimeout(() => setMessage(""), 5000);
+        // setTimeout(() => setMessage(""), 5000);
 
         setName("");
         setUnit("");
@@ -58,6 +60,7 @@ export default function TambahObatFormView() {
       setPrice(null);
       setImage(null);
 
+      toast.success(data.message);
       router.push("/dashboard/obat");
     } catch (error: any) {
       setMessage(error.message);
