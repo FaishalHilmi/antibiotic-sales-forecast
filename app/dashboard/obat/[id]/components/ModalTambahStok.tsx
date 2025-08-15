@@ -2,6 +2,7 @@
 
 import Modal from "@/components/Modal";
 import SelectInput from "@/components/SelectInput";
+import { actionOptions } from "@/data/kategoriOptionsDummy";
 import { ModalTambahStokProps } from "@/types/modal";
 import { useState } from "react";
 
@@ -10,7 +11,7 @@ export default function ModalTambahStok({
   onCloseAction,
   onSubmitAction,
 }: ModalTambahStokProps) {
-  const [jumlahTambah, setJumlahTambah] = useState<number | "">("");
+  const [jumlahTambah, setJumlahTambah] = useState<number | "">();
   const [keterangan, setKeterangan] = useState<string>("");
   const [aksi, setAksi] = useState<string>("");
 
@@ -18,15 +19,10 @@ export default function ModalTambahStok({
     e.preventDefault();
 
     if (!jumlahTambah || !keterangan) return;
-    onSubmitAction(Number(jumlahTambah), keterangan);
+    onSubmitAction(Number(jumlahTambah), aksi, keterangan);
     setJumlahTambah("");
     setKeterangan("");
   };
-
-  const aksiOptionsDummy = [
-    { value: "tambah", label: "Tambah" },
-    { value: "kurang", label: "Kurang" },
-  ];
 
   return (
     <Modal isOpen={isOpen} onCloseAction={onCloseAction} title="Tambah Stok">
@@ -47,7 +43,7 @@ export default function ModalTambahStok({
         <SelectInput
           label="Aksi"
           id="action"
-          options={aksiOptionsDummy}
+          options={actionOptions}
           onChange={(e) => setAksi(e.target.value)}
         />
 
