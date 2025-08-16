@@ -71,10 +71,10 @@ export function calculateForecast(
       ? Number(bestForecast[forecastIndex].toFixed(2))
       : null;
     const mape = hasForecast
-      ? Number(Math.abs(((value - forecastValue!) / value) * 100).toFixed(2))
+      ? Number(Math.abs(((value - forecastValue!) / value) * 100).toFixed(3))
       : null;
     const mae = hasForecast
-      ? Number(Math.abs(value - forecastValue!).toFixed(2))
+      ? Number(Math.abs(value - forecastValue!).toFixed(3))
       : null;
 
     return {
@@ -98,8 +98,8 @@ export function calculateForecast(
 
   return {
     usedPeriod: bestN,
-    avgMape: Number(bestMAPE.toFixed(2)),
-    avgMae: Number(bestMAE.toFixed(2)),
+    avgMape: Number(bestMAPE.toFixed(3)),
+    avgMae: Number(bestMAE.toFixed(3)),
     bestWeights,
     results,
   };
