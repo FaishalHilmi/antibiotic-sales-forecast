@@ -34,7 +34,7 @@ export const transactionColumn = (handleDelete: (id: string) => void) => [
           className="bg-red-500 text-white text-xs px-3 py-2 rounded-lg"
           onClick={() => handleDelete(row.id)}
         >
-          Hapus
+          Batal
         </button>
       </div>
     ),
