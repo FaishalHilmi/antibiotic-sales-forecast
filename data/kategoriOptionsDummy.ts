@@ -1,8 +1,8 @@
 export const kategoriOptionsDummy = [
-  { value: "Antibiotik", label: "Antibiotik" },
-  { value: "Analgesik", label: "Analgesik" },
-  { value: "Antipiretik", label: "Antipiretik" },
-  { value: "Antijamur", label: "Antijamur" },
+  { value: "antibiotik", label: "Antibiotik" },
+  { value: "analgesik", label: "Analgesik" },
+  { value: "antipiretik", label: "Antipiretik" },
+  { value: "antijamur", label: "Antijamur" },
 ];
 
 export const unitOption = [
