@@ -130,8 +130,8 @@ model ForecastResult {
   periodLabel    String
   actualValue    Decimal?         @db.Decimal(12, 2)
   forecastValue  Decimal?         @db.Decimal(12, 2)
-  mape           Decimal?         @db.Decimal(6, 2)
-  mae            Decimal?         @db.Decimal(6, 2)
+  mape           Decimal?         @db.Decimal(6, 3)
+  mae            Decimal?         @db.Decimal(6, 3)
   history        ForecastHistory  @relation(fields: [historyId], references: [id], onDelete: Cascade)
 }
 
@@ -139,8 +139,8 @@ model ForecastSummary {
   id             Int              @id @default(autoincrement())
   historyId      Int              @unique
   weightMethod   String
-  avgMae         Decimal          @db.Decimal(6, 2)
-  avgMape        Decimal          @db.Decimal(6, 2)
+  avgMae         Decimal          @db.Decimal(6, 3)
+  avgMape        Decimal          @db.Decimal(6, 3)
   history        ForecastHistory  @relation(fields: [historyId], references: [id])
 }
 
