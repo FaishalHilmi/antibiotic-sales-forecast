@@ -1,4 +1,5 @@
 import { MedicineProps } from "@/types/medicine";
+import { formatRupiah } from "@/utils/formatCurrency";
 import Image from "next/image";
 import React from "react";
 
@@ -35,12 +36,12 @@ export default function ObatCard({ medicines }: MedicineProps) {
               <div className="flex items-center gap-2">
                 <span className="font-medium w-24">Harga</span>:
                 <span className="text-green-600 font-semibold">
-                  Rp {medicines.price.toLocaleString()}
+                  {formatRupiah(Number(medicines.price))}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium w-24">Satuan</span>:
-                <span>Pcs</span>
+                <span className="capitalize">{medicines.unit}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium w-24">Stok</span>:
