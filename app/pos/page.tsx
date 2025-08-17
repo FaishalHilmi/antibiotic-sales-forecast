@@ -8,6 +8,7 @@ import { MedicineState } from "@/types/medicine";
 import { Minus, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ReceiptData } from "@/types/receipt";
+import { formatRupiah } from "@/utils/formatCurrency";
 
 export default function POSPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -199,7 +200,7 @@ export default function POSPage() {
                   <p className="font-bold md:text-xl m-0">{medicine.name}</p>
                   <div className="card-description flex flex-col md:flex-row justify-between gap-1 md:gap-0 -mt-2">
                     <span className="price font-medium text-gray-400 text-sm">
-                      Rp {medicine.price}
+                      {formatRupiah(Number(medicine.price))}
                     </span>
                     <span className="stock font-semibold text-primary text-sm">
                       Stok: {medicine.stock}
