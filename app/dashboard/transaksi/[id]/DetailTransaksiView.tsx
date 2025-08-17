@@ -101,7 +101,12 @@ export default function DetailTransaksiView({ transaction }: TransactionProps) {
                 <span className="font-bold">Metode Pembayaran</span>
                 <span className="uppercase">{transaction.paymentMethod}</span>
               </div>
+              <div className="flex justify-between">
+                <span className="font-bold">Kasir</span>
+                <span className="capitalize">{transaction.cashier.name}</span>
+              </div>
             </div>
+
             <div className="w-full flex justify-between bg-primary-dark text-white font-bold text-base p-3 rounded-lg">
               <span>Total</span>
               <span>{formatRupiah(Number(transaction.totalAmount))}</span>
