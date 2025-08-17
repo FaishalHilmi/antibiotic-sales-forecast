@@ -24,7 +24,7 @@ export const CashierManageColoumn = (handleDelete: (id: string) => void) => [
           className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg"
           style={{ background: "#155DFC" }}
         >
-          Detail
+          Ubah
         </Link>
         <button
           onClick={() => handleDelete(row.id)}
