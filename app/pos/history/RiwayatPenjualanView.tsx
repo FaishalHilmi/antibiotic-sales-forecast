@@ -44,7 +44,6 @@ export default function RiwayatPenjualanView({ transactions }: any) {
         toast.error(`Gagal menghapus transaksi: ${data.message}`);
       }
     } catch (error) {
-      console.error(error);
       toast.error("Terjadi kesalahan saat menghapus transaksi.");
     } finally {
       setIsDeleting(false);
@@ -88,10 +87,10 @@ export default function RiwayatPenjualanView({ transactions }: any) {
             setSelectedId(null);
           }
         }}
-        title="Konfirmasi Penghapusan"
+        title="Konfirmasi Pembatalan"
       >
         <p className="text-center mb-4">
-          Apakah Anda yakin ingin menghapus data transaksi ini?
+          Apakah Anda yakin ingin membatalkan transaksi ini?
         </p>
 
         <div className="flex justify-center gap-4">
@@ -103,14 +102,14 @@ export default function RiwayatPenjualanView({ transactions }: any) {
             }}
             disabled={isDeleting}
           >
-            Batal
+            Kembali
           </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:opacity-50"
             onClick={handleConfirmDelete}
             disabled={isDeleting}
           >
-            {isDeleting ? "Menghapus..." : "Ya, Hapus"}
+            {isDeleting ? "Membatalkan..." : "Ya, Batalkan"}
           </button>
         </div>
       </Modal>
