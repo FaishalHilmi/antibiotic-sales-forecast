@@ -34,7 +34,7 @@ export default function FormLogin() {
     if (res?.ok) {
       router.refresh();
     } else {
-      setMessage("Email dan Password salah!");
+      setMessage("Username dan Password salah!");
       setTimeout(() => setMessage(""), 3000);
     }
   };
