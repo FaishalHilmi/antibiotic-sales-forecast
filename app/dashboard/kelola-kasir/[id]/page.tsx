@@ -5,9 +5,9 @@ import DetailKasirView from "./DetailKasirView";
 export default function DetailKasirPage() {
   return (
     <div className="wrapper">
-      <h2 className="text-2xl font-bold mb-1">Detail Akun Kasir</h2>
+      <h2 className="text-2xl font-bold mb-1">Ubah Akun Kasir</h2>
       <p className="text-primary mb-6">
-        Lihat informasi lengkap mengenai akun kasir
+        Lengkapi informasi berikut untuk mengubah akun kasir
       </p>
       <div className="mb-6">
         <Link
