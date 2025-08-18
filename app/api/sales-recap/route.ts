@@ -192,8 +192,23 @@ export const POST = async (req: NextRequest) => {
       },
     });
 
+    const recapId = await prisma.salesRecap.findUnique({
+      where: {
+        id: recap.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
     return NextResponse.json(
-      { success: true, message: "Rekap penjualan berhasil dibuat.", recap },
+      {
+        success: true,
+        message: "Rekap penjualan berhasil dibuat.",
+        payload: {
+          id: recapId,
+        },
+      },
       { status: 201 }
     );
   } catch (error) {
