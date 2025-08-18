@@ -1,6 +1,26 @@
+import { cookies } from "next/headers";
 import KelolaKasirView from "./KelolaKasirView";
 
-export default function KelolaKasirPage() {
+export default async function KelolaKasirPage() {
+  const cookieStore = await cookies();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/account/cashier`,
+    {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    }
+  );
+  const req = await res.json();
+
+  if (!res.ok) {
+    throw new Error(req.message || "Gagal fetching API");
+  }
+
+  const cashierAccount = await req.payload;
   return (
     <div>
       <div className="wrapper">
@@ -8,7 +28,7 @@ export default function KelolaKasirPage() {
         <p className="text-primary mb-4">
           Lihat dan kelola data akun kasir yang tersedia
         </p>
-        <KelolaKasirView />
+        <KelolaKasirView cashierAccount={cashierAccount} />
       </div>
     </div>
   );
