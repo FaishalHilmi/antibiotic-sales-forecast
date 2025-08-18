@@ -1,5 +1,7 @@
 import { transactions } from "@/data/transaction";
 import { LatestTransactionProps } from "@/types/transaction";
+import { formatTanggal } from "@/utils/date";
+import { formatRupiah } from "@/utils/formatCurrency";
 import Link from "next/link";
 import React from "react";
 
@@ -33,13 +35,13 @@ export default function RecentTransactions({
                       <span className="text-black">{trx.id}</span>
                     </h2>
                     <p className="text-xs text-gray-500">
-                      {trx.createdAt} - {trx.cashier.name}
+                      {formatTanggal(trx.createdAt)} - {trx.cashier.name}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-sm md:text-base">
                       <span className="text-primary">
-                        Rp {trx.totalAmount.toLocaleString()}
+                        {formatRupiah(Number(trx.totalAmount))}
                       </span>
                     </p>
                     <Link
