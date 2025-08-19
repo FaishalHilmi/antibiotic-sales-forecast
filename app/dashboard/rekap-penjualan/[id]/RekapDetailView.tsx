@@ -45,28 +45,27 @@ export default function DetailRekapView({
   const recapDetails = saleRecap.recapDetails;
 
   const handlePrint = async () => {
+    const originalTitle = document.title;
+    document.title = `Rekap Penjualan - ${monthName} ${year}`;
+
     const url = getChartDataUrl(chartRef);
     if (url) {
       setChartImage(url);
       await new Promise((r) => requestAnimationFrame(() => r(null)));
       await new Promise((r) => setTimeout(r, 100));
     }
+
     window.print();
+
+    // balikin lagi ke title asli
+    document.title = originalTitle;
   };
-
-  const filteredData = dataObat.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const totalObat = filteredData.reduce((acc, item) => acc + item.jumlah, 0);
-  const totalHarga = filteredData.reduce((acc, item) => acc + item.total, 0);
 
   return (
     <div className="space-y-6">
       {/* Tombol Aksi */}
       <div className="flex gap-2 no-print">
         <Link
-          // onClick={() => history.back()}
           href={"/dashboard/rekap-penjualan"}
           className="px-4 py-2 bg-gray-500 text-white rounded-md"
         >
@@ -149,30 +148,6 @@ export default function DetailRekapView({
               )}
             </div>
           </div>
-
-          {/* Tabel Ringkasan Pengeluaran */}
-          {/* <div className="bg-gray-50 border rounded-md shadow-sm p-4">
-            <h3 className="font-semibold text-lg md:text-xl mb-3">
-              Rekap Pengeluaran Obat 4 Minggu Terakhir
-            </h3>
-            <DataTable
-              columns={rekapPengeluanColumn}
-              data={pengeluaranData}
-              customStyles={customDataTableStyles}
-            />
-          </div> */}
-
-          {/* Tabel Peramalan */}
-          {/* <div className="bg-gray-50 border rounded-md shadow-sm p-4">
-            <h3 className="font-semibold text-lg md:text-xl mb-3">
-              Peramalan Penjualan Obat 4 Minggu Mendatang
-            </h3>
-            <DataTable
-              columns={rekapPeramalanColumn}
-              data={peramalanData}
-              customStyles={customDataTableStyles}
-            />
-          </div> */}
         </div>
         {/* Tanda Tangan */}
         <TandaTangan createdAt={latestDate} />
