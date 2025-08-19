@@ -19,7 +19,15 @@ export default function DetailTransaksiView({ transaction }: TransactionProps) {
   const hour = formatWaktuWIB(transaction.createdAt);
   const datetime = `${date} ${hour}`;
 
-  const handlePrint = () => window.print();
+  const handlePrint = () => {
+    const originalTitle = document.title;
+    document.title = `Struk Transaksi - ${transaction.id}`; // 👉 judul PDF
+
+    window.print();
+
+    // balikin lagi setelah print
+    document.title = originalTitle;
+  };
 
   return (
     <div>
