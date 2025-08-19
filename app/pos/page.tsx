@@ -57,6 +57,7 @@ export default function POSPage() {
           {
             medicineId: medicine.id,
             name: medicine.name,
+            imagePath: medicine.imagePath,
             price: Number(medicine.price),
             qty: 1,
             stock: medicine.stock,
@@ -141,9 +142,6 @@ export default function POSPage() {
         throw new Error("Gagal menyimpan transaksi");
       }
 
-      // // Optional: Tampilkan notifikasi berhasil
-      console.log("Transaksi berhasil");
-
       // // Bersihkan keranjang & localStorage
       setCartItems([]);
       localStorage.removeItem("cartItem");
@@ -189,9 +187,9 @@ export default function POSPage() {
                   />
                 ) : (
                   <Image
-                    src="/profile-dummy.png"
+                    src="/blank-image.png"
                     alt="Product Image"
-                    className="rounded-t-lg h-36 w-full object-fill"
+                    className="rounded-t-lg h-36 w-full object-cover"
                     width={500}
                     height={100}
                   />
@@ -238,11 +236,23 @@ export default function POSPage() {
                 >
                   <Trash className="w-5 h-5" />
                 </button>
-                <img
-                  src="/medicine.png"
-                  alt="Image Product"
-                  className="w-20 h-20 rounded-xl"
-                />
+                {item.imagePath ? (
+                  <Image
+                    src={item.imagePath}
+                    alt="Image Product"
+                    className="w-20 h-20 rounded-xl object-cover"
+                    width={500}
+                    height={300}
+                  />
+                ) : (
+                  <Image
+                    src="/blank-image.png"
+                    alt="Image Product"
+                    className="w-20 h-20 rounded-xl object-cover"
+                    width={500}
+                    height={300}
+                  />
+                )}
                 <div className="card-list-description w-full">
                   <span className="font-bold mb-1 block">{item.name}</span>
                   <div className="card-list-action flex flex-col gap-3">
