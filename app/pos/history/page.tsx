@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import RiwayatPenjualanView from "./RiwayatPenjualanView";
 
 export default async function RiwayatPenjualanPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/transaction`,
