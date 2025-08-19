@@ -25,12 +25,13 @@ export default function RekapPenjualanView({
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false); // modal import excel
   const [recapData, setRecapData] = useState<SalesRecap[]>(salesRecap);
   const [saleRecapId, setSaleRecapId] = useState<string | null>();
   const router = useRouter();
 
   const recapDataWithPeriod = recapData.map((item) => {
-    const date = new Date(item.year, item.month - 1); // -1 karena bulan mulai dari 0
+    const date = new Date(item.year, item.month - 1);
     const monthName = format(date, "MMMM", { locale: id });
     return {
       ...item,
@@ -95,21 +96,54 @@ export default function RekapPenjualanView({
     }
   };
 
+  const handleImportExcel = async (formData: FormData) => {
+    try {
+      const res = await fetch("/api/weekly-sales", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const req = await res.json();
+
+      if (!res.ok) {
+        toast.error(req.message || "Gagal import data");
+        return;
+      }
+
+      toast.success(req.message || "Berhasil import data dari Excel");
+      setIsImportModalOpen(false);
+
+      // reload data
+      router.refresh();
+    } catch (error) {
+      toast.error("Gagal import data");
+    }
+  };
+
   return (
     <div className="table-wrapper p-4 mt-7 bg-white flex flex-col border border-gray-200 rounded-3xl">
-      <div className="mb-4 flex flex-col md:flex-row justify-between">
-        <button
-          className="py-2 px-3.5 mb-3 md:mb-0 rounded-lg text-sm bg-primary text-white shadow-md w-fit"
-          onClick={() => setShowModal(true)}
-        >
-          Tambah Rekapitulasi
-        </button>
+      <div className="mb-4 flex flex-col md:flex-row justify-between gap-2">
+        <div className="flex gap-2">
+          <button
+            className="py-2 px-3.5 rounded-lg text-sm bg-primary text-white shadow-md"
+            onClick={() => setShowModal(true)}
+          >
+            Tambah Rekapitulasi
+          </button>
+          <button
+            className="py-2 px-3.5 rounded-lg text-sm bg-green-600 text-white shadow-md"
+            onClick={() => setIsImportModalOpen(true)}
+          >
+            Import Excel
+          </button>
+        </div>
         <SearchBar
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Cari periode rekapitulasi..."
         />
       </div>
+
       <DataTable
         columns={salesRecapColumn(handleUpdateSalesRecap)}
         data={filteredDataByPeriode}
@@ -118,6 +152,7 @@ export default function RekapPenjualanView({
         highlightOnHover
         customStyles={headersBoldStyle}
       />
+
       <ModalTambahRekapitulasi
         isOpen={showModal}
         onCloseAction={() => setShowModal(false)}
@@ -147,6 +182,36 @@ export default function RekapPenjualanView({
             Lihat
           </button>
         </div>
+      </Modal>
+
+      {/* Modal Import Excel */}
+      <Modal
+        isOpen={isImportModalOpen}
+        onCloseAction={() => setIsImportModalOpen(false)}
+        title="Import Data Excel"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            handleImportExcel(formData);
+          }}
+          className="flex flex-col gap-4"
+        >
+          <input
+            type="file"
+            name="file"
+            accept=".xlsx,.xls"
+            required
+            className="border p-2 rounded-md"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-600 text-white rounded-md"
+          >
+            Import
+          </button>
+        </form>
       </Modal>
     </div>
   );
