@@ -26,7 +26,7 @@ export default function DashboardView({ summary }: summaryProps) {
         <SummaryCard
           title="Total Penjualan"
           subtitle={formattedDate}
-          value={`${totalItems} Produk`}
+          value={`${totalItems} Unit`}
           icon={<ShoppingCart className="text-white w-6 h-6" />}
         />
         <SummaryCard
@@ -38,7 +38,7 @@ export default function DashboardView({ summary }: summaryProps) {
         <SummaryCard
           title="Jumlah Obat"
           subtitle="Total Obat Tersedia"
-          value={`${totalMedicines} Item`}
+          value={`${totalMedicines} Produk`}
           icon={<Pill className="text-white w-6 h-6" />}
         />
       </div>
