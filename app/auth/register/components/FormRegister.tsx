@@ -10,7 +10,7 @@ export default function FormRegister() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [role, setRole] = useState<string>("Kasir");
+  const [role, setRole] = useState<string>("Apoteker");
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
