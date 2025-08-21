@@ -4,16 +4,32 @@ import ObatCard from "./components/ObatCard";
 import RiwayatStok from "./components/RiwayatStok";
 import ModalTambahStok from "./components/ModalTambahStok";
 import { useEffect, useState } from "react";
-import { MedicineProps } from "@/types/medicine";
+import { MedicineState } from "@/types/medicine";
 import toast from "react-hot-toast";
 
-export default function DetailObatView({ medicines }: MedicineProps) {
+export default function DetailObatView({ medicineId }: { medicineId: string }) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [stockHistory, setStockHistory] = useState([]);
+  const [medicineDetail, setMedicineDetail] = useState<MedicineState>();
+
+  const getMedicineDetail = async () => {
+    try {
+      const res = await fetch(`/api/medicines/${medicineId}`, {
+        method: "GET",
+      });
+      if (!res.ok) throw new Error("Gagal mengambil detail obat");
+
+      const req = await res.json();
+      const medicine = req.payload;
+      setMedicineDetail(medicine);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   const getStocskHistory = async () => {
     try {
-      const res = await fetch(`/api/medicines/${medicines.id}/stock`, {
+      const res = await fetch(`/api/medicines/${medicineId}/stock`, {
         method: "GET",
       });
 
@@ -36,7 +52,7 @@ export default function DetailObatView({ medicines }: MedicineProps) {
       formData.append("action", action);
       formData.append("note", note);
 
-      const res = await fetch(`/api/medicines/${medicines.id}/stock`, {
+      const res = await fetch(`/api/medicines/${medicineId}/stock`, {
         method: "POST",
         body: formData,
       });
@@ -50,6 +66,7 @@ export default function DetailObatView({ medicines }: MedicineProps) {
       toast.success(data.message || "Stok berhasil diperbarui");
 
       await getStocskHistory();
+      await getMedicineDetail();
       setShowModal(false);
     } catch (error: any) {
       toast.error(error.message || "Terjadi kesalahan saat menambah stok");
@@ -57,6 +74,7 @@ export default function DetailObatView({ medicines }: MedicineProps) {
   };
 
   useEffect(() => {
+    getMedicineDetail();
     getStocskHistory();
   }, []);
 
@@ -64,7 +82,11 @@ export default function DetailObatView({ medicines }: MedicineProps) {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       {/* Detail Obat */}
       <div className="col-span-1 md:col-span-2">
-        <ObatCard medicines={medicines} />
+        {medicineDetail ? (
+          <ObatCard medicines={medicineDetail} />
+        ) : (
+          <div className="w-full h-40 rounded-3xl bg-slate-50 border border-gray-200"></div>
+        )}
       </div>
       {/* Riwayat Stok */}
       <div className="col-span-1">
