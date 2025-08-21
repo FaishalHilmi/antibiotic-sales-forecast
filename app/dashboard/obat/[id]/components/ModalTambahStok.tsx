@@ -11,7 +11,7 @@ export default function ModalTambahStok({
   onCloseAction,
   onSubmitAction,
 }: ModalTambahStokProps) {
-  const [jumlahTambah, setJumlahTambah] = useState<number | "">();
+  const [jumlahTambah, setJumlahTambah] = useState<number | "">("");
   const [keterangan, setKeterangan] = useState<string>("");
   const [aksi, setAksi] = useState<string>("");
 
@@ -21,6 +21,7 @@ export default function ModalTambahStok({
     if (!jumlahTambah || !keterangan) return;
     onSubmitAction(Number(jumlahTambah), aksi, keterangan);
     setJumlahTambah("");
+    setAksi("");
     setKeterangan("");
   };
 
@@ -44,6 +45,7 @@ export default function ModalTambahStok({
           label="Aksi"
           id="action"
           options={actionOptions}
+          value={aksi}
           onChange={(e) => setAksi(e.target.value)}
         />
 
