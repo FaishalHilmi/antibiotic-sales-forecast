@@ -1,32 +1,12 @@
 import Link from "next/link";
 import DetailObatView from "./DetailObatView";
-import { cookies } from "next/headers";
 
 export default async function DetailObatPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const cookieStore = await cookies();
   const { id: medicineId } = await params;
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/medicines/${medicineId}`,
-    {
-      method: "GET",
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw Error("Gagal fetch API");
-  }
-
-  const req = await res.json();
-  const medicine = req.payload;
 
   return (
     <div className="wrapper">
@@ -46,7 +26,7 @@ export default async function DetailObatPage({
           Ubah Obat
         </Link>
       </div>
-      <DetailObatView medicines={medicine} />
+      <DetailObatView medicineId={medicineId} />
     </div>
   );
 }
