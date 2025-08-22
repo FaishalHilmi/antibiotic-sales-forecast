@@ -30,6 +30,9 @@ export const GET = async () => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json({
