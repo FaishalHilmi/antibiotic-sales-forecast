@@ -8,10 +8,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const id = Number(params.id);
+    const { id } = await params;
+    const cashierId = Number(id);
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.name) {
@@ -24,19 +25,9 @@ export const GET = async (
       );
     }
 
-    if (isNaN(id)) {
-      return NextResponse.json(
-        {
-          succes: false,
-          message: "ID tidak ditemukan",
-        },
-        { status: 401 }
-      );
-    }
-
     const cashierAccount = await prisma.user.findUnique({
       where: {
-        id,
+        id: cashierId,
         role: Role.CASHIER,
         deletedAt: null,
       },
@@ -51,6 +42,7 @@ export const GET = async (
         { status: 401 }
       );
     }
+
     return NextResponse.json({
       succes: true,
       message: "Berhasil mendapatkan data kasi berdasarkan ID",
@@ -69,7 +61,7 @@ export const GET = async (
 
 export const PUT = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const session = await getServerSession(authOptions);
@@ -81,7 +73,8 @@ export const PUT = async (
       );
     }
 
-    const id = Number(params.id);
+    const { id } = await params;
+    const cashierId = Number(id);
     const formData = await req.formData();
 
     const name = formData.get("name") as string;
@@ -90,10 +83,24 @@ export const PUT = async (
     const password = formData.get("password") as string;
     const image = formData.get("image") as File | null;
 
-    let newRole: Role;
-    let imageUrl: string = "/profile-dummy.png";
+    const user = await prisma.user.findUnique({
+      where: {
+        id: cashierId,
+        role: Role.CASHIER,
+      },
+    });
 
-    if (role === "CASHIER") {
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User tidak ditemukan" },
+        { status: 404 }
+      );
+    }
+
+    let newRole: Role;
+    let imageUrl: string = user.imagePath || "";
+
+    if (role === "Kasir") {
       newRole = Role.CASHIER;
 
       // Hanya kalau image tersedia dan ada isinya
@@ -112,7 +119,7 @@ export const PUT = async (
       where: {
         username,
         NOT: {
-          id: id,
+          id: cashierId,
         },
       },
     });
@@ -127,31 +134,20 @@ export const PUT = async (
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-        role: Role.CASHIER,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User tidak ditemukan" },
-        { status: 404 }
-      );
-    }
-
     let finalPassword = user.password;
 
-    // Jika password berbeda, hash ulang
-    const isSamePassword = await bcrypt.compare(password, user.password);
-    if (!isSamePassword) {
-      finalPassword = await bcrypt.hash(password, 10);
+    if (password && password.trim() !== "") {
+      // Jika password berbeda, hash ulang
+      const isSamePassword = await bcrypt.compare(password, finalPassword);
+
+      if (!isSamePassword) {
+        finalPassword = await bcrypt.hash(password, 10);
+      }
     }
 
     await prisma.user.update({
       where: {
-        id,
+        id: cashierId,
       },
       data: {
         name,
