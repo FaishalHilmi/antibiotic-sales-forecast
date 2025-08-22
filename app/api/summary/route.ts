@@ -54,7 +54,11 @@ export const GET = async (req: NextRequest) => {
     });
 
     // Menghitung jumlah obat
-    const totalMedicines = await prisma.medicine.count();
+    const totalMedicines = await prisma.medicine.count({
+      where: {
+        deletedAt: null,
+      },
+    });
 
     // Data penjualan dalam 7 hari
     const lastSevenDaysData: LastSevenDaysProps[] = [];
