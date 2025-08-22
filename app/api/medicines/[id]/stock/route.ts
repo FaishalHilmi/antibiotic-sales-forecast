@@ -123,10 +123,23 @@ export const POST = async (
     let updatedStock;
 
     if (currentStock <= 0 && action == "kurang") {
-      return NextResponse.json({
-        succes: false,
-        message: "Stok obat 0 tidak bisa dikurangi",
-      });
+      return NextResponse.json(
+        {
+          succes: false,
+          message: "Stok obat 0 tidak bisa dikurangi",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (currentStock < Number(quantity) && action == "kurang") {
+      return NextResponse.json(
+        {
+          succes: false,
+          message: `Tidak bisa mengurangkan stok lebih dari ${currentStock}`,
+        },
+        { status: 400 }
+      );
     }
 
     if (currentStock >= 0) {
